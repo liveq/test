@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="[서비스 설명을 여기에 입력하세요]">
+    <meta name="keywords" content="[키워드1, 키워드2, 키워드3]">
+    <meta name="author" content="BAAL">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://[서비스명].baal.co.kr/">
+    <meta property="og:title" content="[서비스 제목]">
+    <meta property="og:description" content="[서비스 설명]">
+    <meta property="og:image" content="https://[서비스명].baal.co.kr/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://[서비스명].baal.co.kr/">
+    <meta property="twitter:title" content="[서비스 제목]">
+    <meta property="twitter:description" content="[서비스 설명]">
+    <meta property="twitter:image" content="https://[서비스명].baal.co.kr/og-image.png">
+
+    <title>[서비스 제목] - BAAL</title>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2886185075996969"
+     crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <!-- 공통 스타일 -->
+    <link rel="stylesheet" href="../_template/common.css">
+    <style>
+        /* 서비스별 스타일은 여기에 추가 */
+    </style>
+</head>
+<body>
+    <!-- 다크모드 토글 -->
+    <div class="theme-toggle">
+        <button id="themeToggle" aria-label="다크모드 전환">
+            <span class="icon-light">☀️</span>
+            <span class="icon-dark">🌙</span>
+        </button>
+    </div>
+
+    <!-- 언어 전환 -->
+    <div class="lang-toggle">
+        <button id="langToggle" data-lang="ko">
+            <span class="lang-ko">EN</span>
+            <span class="lang-en">KO</span>
+        </button>
+    </div>
+
+    <!-- 도구 버튼 -->
+    <div class="tools-toggle">
+        <button id="toolsToggle" data-ko="더 많은 도구" data-en="More Tools">
+            🧰
+        </button>
+    </div>
+
+    <!-- 메인 컨테이너 -->
+    <div class="container">
+        <header>
+            <h1 data-ko="[서비스 제목]" data-en="[Service Title]">[서비스 제목]</h1>
+            <p class="subtitle" data-ko="[서비스 설명]" data-en="[Service Description]">[서비스 설명]</p>
+        </header>
+
+        <main>
+            <!-- 드롭존 예시 (필요한 경우 사용) -->
+            <!--
+            <div class="dropzone" id="dropzone">
+                <p data-ko="파일을 드래그하거나 클릭하여 업로드" data-en="Drag & drop files or click to upload">
+                    파일을 드래그하거나 클릭하여 업로드
+                </p>
+                <input type="file" id="fileInput" multiple style="display: none;">
+            </div>
+            -->
+
+            <!-- 서비스 기능은 여기에 추가 -->
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <p class="footer-brand">
+                    Made by <a href="https://baal.co.kr" target="_blank">BAAL</a>
+                </p>
+                <p class="footer-contact">
+                    <a href="mailto:baal.contract@gmail.com">baal.contract@gmail.com</a>
+                </p>
+                <p class="footer-links">
+                    <a href="https://baal.co.kr/privacy" target="_blank" data-ko="개인정보처리방침" data-en="Privacy Policy">개인정보처리방침</a>
+                    <span class="separator">|</span>
+                    <a href="https://baal.co.kr/terms" target="_blank" data-ko="이용약관" data-en="Terms of Service">이용약관</a>
+                </p>
+                <p class="footer-copyright">&copy; 2025 BAAL. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 공통 스크립트 -->
+    <script src="../_template/common.js"></script>
+    <script>
+        // 서비스별 스크립트는 여기에 추가
+    </script>
+</body>
+</html>
