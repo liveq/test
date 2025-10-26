@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# Build outputs
+dist/
+build/
+
+# Service code files (각 서비스는 개별 저장소에만)
+tools/*/index.html
+tools/*/_common/
+
+# Keep only template
+!tools/_template/
