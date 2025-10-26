@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>도구 플랜 - BAAL</title>
+    <title>BAAL 서비스 로드맵</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -273,7 +273,7 @@
 
         <!-- 완료된 서비스 -->
         <div class="category">
-            <h2>완료된 서비스 (7개)</h2>
+            <h2>완료된 서비스 (3개)</h2>
             <p>현재 운영 중인 서비스</p>
         </div>
 
@@ -291,7 +291,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#1 도면 배치</div>
-                        <div class="service-url"><a href="https://plan.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">plan.baal.co.kr</a></div>
+                        <div class="service-url">plan.baal.co.kr</div>
                     </td>
                     <td class="service-desc">평면도 그리기 & 가구 배치 플래너. 드래그 앤 드롭으로 공간 배치 설계</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -301,7 +301,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#2 텍스트 분할기</div>
-                        <div class="service-url"><a href="https://split.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">split.baal.co.kr</a></div>
+                        <div class="service-url">split.baal.co.kr</div>
                     </td>
                     <td class="service-desc">대용량 txt 파일을 원하는 크기로 분할. AI 업로드용으로 인기</td>
                     <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
@@ -311,74 +311,14 @@
                 <tr>
                     <td>
                         <div class="service-name">#3 PDF 변환</div>
-                        <div class="service-url"><a href="https://pdf.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">pdf.baal.co.kr</a></div>
+                        <div class="service-url">pdf.baal.co.kr</div>
                     </td>
                     <td class="service-desc">PDF를 JPEG로 변환하거나 여러 파일로 분할. 품질 조절, 그레이스케일</td>
                     <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
                     <td>PDF.js, PDF-lib, JSZip</td>
                     <td><span class="status-badge status-done">완료</span></td>
                 </tr>
-                <tr>
-                    <td>
-                        <div class="service-name">#4 이미지 압축기</div>
-                        <div class="service-url"><a href="https://compress.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">compress.baal.co.kr</a></div>
-                    </td>
-                    <td class="service-desc">JPG/PNG/WebP 이미지 용량 줄이기. 품질 조절 가능. 탭 통합 UI</td>
-                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
-                    <td>browser-image-compression, pica, JSZip</td>
-                    <td><span class="status-badge status-done">완료</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="service-name">#6 이미지 리사이즈</div>
-                        <div class="service-url"><a href="https://resize.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">resize.baal.co.kr</a></div>
-                    </td>
-                    <td class="service-desc">이미지 크기 변경. 픽셀/비율 지정, SNS 프리셋, 일괄 처리</td>
-                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
-                    <td>Canvas API, pica, JSZip</td>
-                    <td><span class="status-badge status-done">완료</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="service-name">#14 이미지 변환기</div>
-                        <div class="service-url"><a href="https://convert.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">convert.baal.co.kr</a></div>
-                    </td>
-                    <td class="service-desc">JPG↔PNG↔WebP 포맷 변환. 일괄 처리. 탭 통합 UI</td>
-                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
-                    <td>Canvas API, JSZip</td>
-                    <td><span class="status-badge status-done">완료</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="service-name">#20 AI 이미지 업스케일러</div>
-                        <div class="service-url"><a href="https://upscale.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">upscale.baal.co.kr</a></div>
-                    </td>
-                    <td class="service-desc">AI로 이미지 해상도 향상. 스피드/AI 모드. 탭 통합 UI</td>
-                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
-                    <td>pica, UpscalerJS, JSZip</td>
-                    <td><span class="status-badge status-done">완료</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="service-name">#5 QR 코드 생성기</div>
-                        <div class="service-url"><a href="https://qr.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">qr.baal.co.kr</a></div>
-                    </td>
-                    <td class="service-desc">URL, 텍스트, 연락처 QR 코드 생성. 색상/로고 커스터마이징</td>
-                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
-                    <td>qrcode.js</td>
-                    <td><span class="status-badge status-done">완료</span></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="service-name">#7 JSON 포맷터</div>
-                        <div class="service-url"><a href="https://json.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">json.baal.co.kr</a></div>
-                    </td>
-                    <td class="service-desc">JSON 정렬/압축/검증. 트리뷰, 에러 표시. 개발자용</td>
-                    <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
-                    <td>순수 JS</td>
-                    <td><span class="status-badge status-done">완료</span></td>
-                </tr>
-</tbody>
+            </tbody>
         </table>
 
         <!-- Phase 1: 가볍고 인기 많은 도구 -->
@@ -398,6 +338,46 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <td>
+                        <div class="service-name">#4 이미지 압축기</div>
+                        <div class="service-url">compress.baal.co.kr</div>
+                    </td>
+                    <td class="service-desc">JPG/PNG/WebP 이미지 용량 줄이기. 품질 조절 가능. SEO 최고</td>
+                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
+                    <td>browser-image-compression</td>
+                    <td><span class="status-badge status-easy">쉬움 (2일)</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="service-name">#5 QR 코드 생성기</div>
+                        <div class="service-url">qr.baal.co.kr</div>
+                    </td>
+                    <td class="service-desc">URL, 텍스트, 연락처 QR 코드 생성. 색상/로고 커스터마이징</td>
+                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
+                    <td>qrcode.js</td>
+                    <td><span class="status-badge status-easy">쉬움 (1일)</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="service-name">#6 이미지 리사이즈</div>
+                        <div class="service-url">resize.baal.co.kr</div>
+                    </td>
+                    <td class="service-desc">이미지 크기 변경. 픽셀/비율 지정, 일괄 처리 지원</td>
+                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
+                    <td>Canvas API</td>
+                    <td><span class="status-badge status-easy">쉬움 (2일)</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="service-name">#7 JSON 포맷터</div>
+                        <div class="service-url">json.baal.co.kr</div>
+                    </td>
+                    <td class="service-desc">JSON 정렬/압축/검증. 트리뷰, 에러 표시. 개발자용</td>
+                    <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
+                    <td>순수 JS</td>
+                    <td><span class="status-badge status-easy">쉬움 (1일)</span></td>
+                </tr>
             </tbody>
         </table>
 
@@ -421,7 +401,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#8 색상 변환기</div>
-                        <div class="service-url"><a href="https://color.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">color.baal.co.kr</a></div>
+                        <div class="service-url">color.baal.co.kr</div>
                     </td>
                     <td class="service-desc">HEX↔RGB↔HSL 변환. 팔레트 생성, 색상 피커. 디자이너용</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -431,7 +411,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#9 Base64 인코더</div>
-                        <div class="service-url"><a href="https://base64.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">base64.baal.co.kr</a></div>
+                        <div class="service-url">base64.baal.co.kr</div>
                     </td>
                     <td class="service-desc">텍스트/이미지 Base64 인코딩/디코딩. 개발자용</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -441,7 +421,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#10 정규식 테스터</div>
-                        <div class="service-url"><a href="https://regex.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">regex.baal.co.kr</a></div>
+                        <div class="service-url">regex.baal.co.kr</div>
                     </td>
                     <td class="service-desc">정규식 실시간 테스트. 매치 하이라이트, 설명. 개발자용</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -451,7 +431,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#11 해시 생성기</div>
-                        <div class="service-url"><a href="https://hash.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">hash.baal.co.kr</a></div>
+                        <div class="service-url">hash.baal.co.kr</div>
                     </td>
                     <td class="service-desc">MD5, SHA-1, SHA-256 해시 생성. 파일/텍스트 지원</td>
                     <td><span class="traffic traffic-low">⭐ 낮음</span></td>
@@ -461,7 +441,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#12 CSV 변환기</div>
-                        <div class="service-url"><a href="https://csv.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">csv.baal.co.kr</a></div>
+                        <div class="service-url">csv.baal.co.kr</div>
                     </td>
                     <td class="service-desc">CSV↔JSON↔Excel 변환. 구분자 설정, 미리보기</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -471,7 +451,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#13 마크다운 에디터</div>
-                        <div class="service-url"><a href="https://md.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">md.baal.co.kr</a></div>
+                        <div class="service-url">md.baal.co.kr</div>
                     </td>
                     <td class="service-desc">실시간 마크다운 미리보기. HTML 변환, 다운로드</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -500,8 +480,18 @@
             <tbody>
                 <tr>
                     <td>
+                        <div class="service-name">#14 이미지 변환기</div>
+                        <div class="service-url">convert.baal.co.kr</div>
+                    </td>
+                    <td class="service-desc">JPG↔PNG↔WebP↔GIF 포맷 변환. 일괄 처리 지원</td>
+                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
+                    <td>Canvas API</td>
+                    <td><span class="status-badge status-medium">중간 (3일)</span></td>
+                </tr>
+                <tr>
+                    <td>
                         <div class="service-name">#15 바코드 생성기</div>
-                        <div class="service-url"><a href="https://barcode.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">barcode.baal.co.kr</a></div>
+                        <div class="service-url">barcode.baal.co.kr</div>
                     </td>
                     <td class="service-desc">Code128, EAN-13, QR 등 바코드 생성. 인쇄용</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -511,7 +501,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#16 워터마크 추가</div>
-                        <div class="service-url"><a href="https://watermark.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">watermark.baal.co.kr</a></div>
+                        <div class="service-url">watermark.baal.co.kr</div>
                     </td>
                     <td class="service-desc">이미지에 텍스트/로고 워터마크. 위치/투명도 조절</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
@@ -521,7 +511,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#17 차트 생성기</div>
-                        <div class="service-url"><a href="https://chart.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">chart.baal.co.kr</a></div>
+                        <div class="service-url">chart.baal.co.kr</div>
                     </td>
                     <td class="service-desc">막대/선/파이 차트 생성. 데이터 입력, PNG 다운로드</td>
                     <td><span class="traffic traffic-low">⭐ 낮음</span></td>
@@ -531,7 +521,7 @@
                 <tr>
                     <td>
                         <div class="service-name">#18 배경 제거</div>
-                        <div class="service-url"><a href="https://bg.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">bg.baal.co.kr</a></div>
+                        <div class="service-url">bg.baal.co.kr</div>
                     </td>
                     <td class="service-desc">AI 기반 이미지 배경 투명화. 사람/물체 인식</td>
                     <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
@@ -541,12 +531,22 @@
                 <tr>
                     <td>
                         <div class="service-name">#19 OCR (텍스트 추출)</div>
-                        <div class="service-url"><a href="https://ocr.baal.co.kr" target="_blank" style="color: #d4af37; text-decoration: none; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">ocr.baal.co.kr</a></div>
+                        <div class="service-url">ocr.baal.co.kr</div>
                     </td>
                     <td class="service-desc">이미지에서 텍스트 추출. 한글/영어 지원. 느림 주의</td>
                     <td><span class="traffic traffic-medium">⭐⭐ 중간</span></td>
                     <td>Tesseract.js</td>
                     <td><span class="status-badge status-hard">어려움 (4일)</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="service-name">#20 AI 이미지 업스케일러</div>
+                        <div class="service-url">upscale.baal.co.kr</div>
+                    </td>
+                    <td class="service-desc">AI로 이미지 해상도 향상. 스피드 모드(pica) + AI 모드(UpscalerJS). 디테일 복원</td>
+                    <td><span class="traffic traffic-high">⭐⭐⭐ 높음</span></td>
+                    <td>pica, UpscalerJS</td>
+                    <td><span class="status-badge status-hard">어려움 (7일)</span></td>
                 </tr>
             </tbody>
         </table>
@@ -554,8 +554,7 @@
         <div style="margin-top: 50px; padding: 35px 40px; background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%); border-radius: 16px; border: 2px solid #f0e6d2; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);">
             <h3 style="color: #1a1a1a; margin-bottom: 20px; font-size: 1.4em; font-weight: 700; letter-spacing: -0.3px;">개발 전략</h3>
             <ul style="color: #4a4a4a; line-height: 2.2; margin-left: 20px; font-size: 0.95em;">
-                <li><strong style="color: #d4af37;">✅ 완료 (9개):</strong> 도면배치, 텍스트분할, PDF변환, 이미지도구 4종(압축/리사이즈/변환/업스케일), QR코드, JSON포맷터</li>
-                <li><strong style="color: #d4af37;">다음 우선순위:</strong> Phase 2 도구 (#8~#13: 색상/Base64/정규식/해시/CSV/마크다운) 빠르게 제작</li>
+                <li><strong style="color: #d4af37;">Phase 1 먼저:</strong> 이미지 압축 → QR 코드 → 리사이즈 순으로 빠르게 제작</li>
                 <li><strong style="color: #d4af37;">SEO 집중:</strong> 메타 태그, Open Graph, 스키마 마크업 완벽히</li>
                 <li><strong style="color: #d4af37;">디자인 통일:</strong> 골드 그라디언트, 다크모드, 한/영 전환 기본 탑재</li>
                 <li><strong style="color: #d4af37;">baal.co.kr 허브화:</strong> 모든 도구를 3열 그리드로 노출</li>
