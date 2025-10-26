@@ -20,9 +20,24 @@ Thumbs.db
 dist/
 build/
 
-# Service code files (각 서비스는 개별 저장소에만)
-tools/*/index.html
-tools/*/_common/
+# Service directories (각 서비스는 개별 저장소에만)
+apart/
+baal/
+diora/
+pdf/
+split/
+liveq-test/
 
-# Keep only template
+# Service code files
+tools/*/
 !tools/_template/
+
+# Backup files
+*.backup
+*.backup.old
+tools-plan*.html
+
+# Scripts (개별 서비스 저장소용)
+*.bat
+*.sh
+*.py
