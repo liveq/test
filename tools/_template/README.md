@@ -247,6 +247,225 @@ npm-debug.log*
 
 **baal.co.kr (루트 도메인)이 승인되면 모든 서브도메인에서 자동으로 광고가 게재됩니다.**
 
+### 🚨 Google AdSense 필수 요구사항 (2025-01-27)
+
+Google AdSense 정책 준수를 위해 **모든 서비스 푸터에 반드시 포함**해야 하는 요소:
+
+#### 1️⃣ 개인정보처리방침 (Privacy Policy)
+#### 2️⃣ 이용약관 (Terms of Service)
+
+**구현 방법**: 외부 페이지 링크 대신 **모달(팝업) 방식** 사용
+- ✅ 404 에러 방지
+- ✅ 페이지 이탈 방지
+- ✅ 모든 서비스에서 동일한 내용 제공
+
+---
+
+### 푸터 표준 구조 (모든 서비스 필수)
+
+```html
+<footer>
+    <div class="footer-content">
+        <p class="footer-brand">
+            Made by <a href="https://baal.co.kr" target="_blank">BAAL</a> |
+            <a href="https://baal.co.kr" target="_blank" data-ko="더 많은 도구" data-en="More Tools">더 많은 도구</a>
+        </p>
+        <p class="footer-contact">
+            <a href="mailto:baal.contract@gmail.com">baal.contract@gmail.com</a>
+        </p>
+        <p class="footer-links">
+            <a href="#" onclick="openPrivacyModal(); return false;" data-ko="개인정보처리방침" data-en="Privacy Policy">개인정보처리방침</a>
+            <span class="separator">|</span>
+            <a href="#" onclick="openTermsModal(); return false;" data-ko="이용약관" data-en="Terms of Service">이용약관</a>
+        </p>
+        <p class="footer-copyright">&copy; 2025 BAAL. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- 개인정보처리방침 모달 -->
+<div id="privacyModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closePrivacyModal()">&times;</span>
+        <h2 data-ko="개인정보처리방침" data-en="Privacy Policy">개인정보처리방침</h2>
+        <div class="modal-body">
+            <p data-ko="BAAL의 모든 도구는 개인정보를 수집하지 않습니다." data-en="BAAL tools do not collect any personal information.">
+                BAAL의 모든 도구는 개인정보를 수집하지 않습니다.
+            </p>
+            <p data-ko="모든 파일 처리는 사용자의 브라우저에서 로컬로 수행되며, 서버로 전송되지 않습니다." data-en="All file processing is done locally in your browser and nothing is sent to our servers.">
+                모든 파일 처리는 사용자의 브라우저에서 로컬로 수행되며, 서버로 전송되지 않습니다.
+            </p>
+            <h3 data-ko="개인정보 보호책임자" data-en="Privacy Officer">개인정보 보호책임자</h3>
+            <p>
+                <strong data-ko="이메일" data-en="Email">이메일</strong>: baal.contract@gmail.com
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- 이용약관 모달 -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeTermsModal()">&times;</span>
+        <h2 data-ko="이용약관" data-en="Terms of Service">이용약관</h2>
+        <div class="modal-body">
+            <h3 data-ko="1. 서비스 이용" data-en="1. Service Usage">1. 서비스 이용</h3>
+            <p data-ko="BAAL의 도구는 무료로 제공되며, 모든 처리는 클라이언트 측에서 수행됩니다." data-en="BAAL tools are provided free of charge. All processing is done client-side.">
+                BAAL의 도구는 무료로 제공되며, 모든 처리는 클라이언트 측에서 수행됩니다.
+            </p>
+            <h3 data-ko="2. 면책 조항" data-en="2. Disclaimer">2. 면책 조항</h3>
+            <p data-ko="서비스는 '있는 그대로' 제공되며, 정확성이나 완전성을 보장하지 않습니다." data-en="The service is provided 'as is' without any warranties of accuracy or completeness.">
+                서비스는 '있는 그대로' 제공되며, 정확성이나 완전성을 보장하지 않습니다.
+            </p>
+            <h3 data-ko="3. 광고" data-en="3. Advertising">3. 광고</h3>
+            <p data-ko="본 서비스는 Google AdSense를 통한 광고를 포함할 수 있습니다." data-en="This service may include advertising via Google AdSense.">
+                본 서비스는 Google AdSense를 통한 광고를 포함할 수 있습니다.
+            </p>
+        </div>
+    </div>
+</div>
+</div>
+```
+
+---
+
+### 모달 스타일 (common.css에 이미 포함)
+
+```css
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--bg-primary);
+    padding: 30px;
+    border-radius: var(--border-radius-lg);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--gold-primary);
+}
+```
+
+---
+
+### 모달 기능 (common.js에 이미 포함)
+
+```javascript
+// 개인정보처리방침 모달
+const openPrivacyModal = () => {
+    const modal = document.getElementById('privacyModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+const closePrivacyModal = () => {
+    const modal = document.getElementById('privacyModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+};
+
+// 이용약관 모달
+const openTermsModal = () => {
+    const modal = document.getElementById('termsModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+const closeTermsModal = () => {
+    const modal = document.getElementById('termsModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+};
+
+// 모달 외부 클릭 시 닫기
+window.addEventListener('click', (e) => {
+    const privacyModal = document.getElementById('privacyModal');
+    const termsModal = document.getElementById('termsModal');
+
+    if (e.target === privacyModal) {
+        closePrivacyModal();
+    }
+    if (e.target === termsModal) {
+        closeTermsModal();
+    }
+});
+
+// 전역 함수로 노출
+window.openPrivacyModal = openPrivacyModal;
+window.closePrivacyModal = closePrivacyModal;
+window.openTermsModal = openTermsModal;
+window.closeTermsModal = closeTermsModal;
+```
+
+---
+
+### ⚠️ 주의사항
+
+1. **외부 링크 사용 금지**
+   - ❌ `<a href="https://baal.co.kr/privacy">`
+   - ✅ `<a href="#" onclick="openPrivacyModal(); return false;">`
+
+2. **푸터 위치**
+   - `</main>` 태그 다음, `</div>` (container 닫기) 전
+   - 모달은 container div 닫기 전에 배치
+
+3. **필수 요소**
+   - ✅ "Made by BAAL | 더 많은 도구"
+   - ✅ baal.contract@gmail.com
+   - ✅ 개인정보처리방침 모달
+   - ✅ 이용약관 모달
+   - ✅ Copyright 표시
+
+4. **자동 배포**
+   - `_common/common.css` 업데이트 시 모든 서비스에 자동 반영
+   - `_common/common.js` 업데이트 시 모든 서비스에 자동 반영
+
+---
+
+### 🎯 AdSense 승인 체크리스트
+
+- [ ] 모든 서비스에 AdSense 코드 포함
+- [ ] 모든 서비스에 표준 푸터 적용
+- [ ] 개인정보처리방침 모달 작동 확인
+- [ ] 이용약관 모달 작동 확인
+- [ ] 404 에러 없음 확인
+- [ ] 한/영 전환 시 모달 내용도 전환되는지 확인
+
 ---
 
 ## 라이브러리 추가
