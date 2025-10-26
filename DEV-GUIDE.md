@@ -426,6 +426,263 @@ async function downloadAsZip(files, zipName = 'files.zip') {
 }
 ```
 
+### 4.9 PDF 페이지 네비게이션 (OCR #19)
+
+**기능:** PDF 업로드 시 전체 페이지를 썸네일로 표시하고, 이전/다음 페이지 네비게이션, 개별/전체 다운로드 지원
+
+```javascript
+// PDF 전체 페이지를 JPEG로 변환하여 저장
+let pdfPages = [];  // { pageNum, dataUrl, canvas, blob }
+let currentPageIndex = 0;
+
+async function loadAllPDFPages(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const totalPages = pdf.numPages;
+
+    pdfPages = [];
+
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 2 }); // 고해상도
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+
+        pdfPages.push({ pageNum, dataUrl, canvas, blob });
+    }
+
+    // 네비게이션 표시
+    showPDFNavigation();
+    showPDFPage(0);
+}
+
+// 특정 페이지 표시
+function showPDFPage(pageIndex) {
+    if (pageIndex < 0 || pageIndex >= pdfPages.length) return;
+
+    currentPageIndex = pageIndex;
+    const page = pdfPages[pageIndex];
+
+    // 미리보기 이미지 교체
+    document.getElementById('previewContainer').innerHTML =
+        `<img src="${page.dataUrl}" alt="Page ${page.pageNum}">`;
+
+    // 네비게이션 업데이트
+    updatePDFNavigation();
+}
+```
+
+### 4.10 조건부 레이아웃 정렬 (OCR #19)
+
+**기능:** 아이템 개수에 따라 자동으로 중앙 정렬 / 왼쪽 정렬 전환
+
+```javascript
+// 썸네일이 적으면 중앙 정렬, 많으면 스크롤
+function updateThumbnails() {
+    const thumbnailList = document.getElementById('thumbnailList');
+    const shouldCenterAlign = pdfPages.length <= 5;
+
+    // 조건부 정렬
+    if (shouldCenterAlign) {
+        thumbnailList.style.justifyContent = 'center';
+    } else {
+        thumbnailList.style.justifyContent = 'flex-start';
+    }
+
+    // 썸네일 생성
+    pdfPages.forEach((page, index) => {
+        const thumbnail = document.createElement('div');
+        thumbnail.setAttribute('data-page-index', index);
+        thumbnail.innerHTML = `<img src="${page.dataUrl}">`;
+        thumbnailList.appendChild(thumbnail);
+    });
+
+    // 많을 때만 선택된 항목 자동 스크롤
+    if (!shouldCenterAlign) {
+        scrollThumbnailToCenter(currentPageIndex);
+    }
+}
+```
+
+### 4.11 선택된 항목 자동 중앙 스크롤 (OCR #19)
+
+**기능:** 사용자가 썸네일 클릭 시 해당 항목이 화면 중앙에 오도록 스크롤
+
+```javascript
+function scrollThumbnailToCenter(pageIndex) {
+    const thumbnailList = document.getElementById('thumbnailList');
+    const thumbnail = thumbnailList.querySelector(`[data-page-index="${pageIndex}"]`);
+
+    if (thumbnail && thumbnailList) {
+        // 썸네일의 위치 계산
+        const thumbnailLeft = thumbnail.offsetLeft;
+        const thumbnailWidth = thumbnail.offsetWidth;
+        const listWidth = thumbnailList.offsetWidth;
+
+        // 중앙으로 스크롤할 위치 계산
+        const scrollPosition = thumbnailLeft - (listWidth / 2) + (thumbnailWidth / 2);
+
+        thumbnailList.scrollTo({
+            left: scrollPosition,
+            behavior: 'smooth'
+        });
+    }
+}
+```
+
+**CSS:**
+```css
+#thumbnailList {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;  /* ⭐ 부드러운 스크롤 */
+}
+```
+
+### 4.12 관련 콘텐츠 자동 스크롤 (OCR #19)
+
+**기능:** 썸네일 클릭 시 해당 페이지의 추출된 텍스트로 자동 스크롤 + 하이라이트
+
+```javascript
+function scrollToPageText(pageIndex) {
+    const resultText = document.getElementById('resultText');
+    if (!resultText || !resultText.value) return;
+
+    const pageNum = pageIndex + 1;
+    const pageMarker = `=== 페이지 ${pageNum} ===`;
+    const textValue = resultText.value;
+    const markerIndex = textValue.indexOf(pageMarker);
+
+    if (markerIndex !== -1) {
+        // textarea에서 해당 위치로 스크롤
+        const beforeText = textValue.substring(0, markerIndex);
+        const lineNumber = beforeText.split('\n').length;
+        const lineHeight = 20;
+        const scrollPosition = (lineNumber - 1) * lineHeight;
+
+        resultText.scrollTop = scrollPosition;
+
+        // 1초간 하이라이트 효과
+        const endIndex = textValue.indexOf('\n\n', markerIndex);
+        if (endIndex !== -1) {
+            resultText.setSelectionRange(markerIndex, endIndex);
+            setTimeout(() => {
+                resultText.setSelectionRange(markerIndex, markerIndex);
+            }, 1000);
+        }
+    }
+}
+
+// 페이지 변경 시 호출
+function showPDFPage(pageIndex) {
+    // ... 페이지 표시 로직 ...
+
+    // 추출된 텍스트로 스크롤
+    scrollToPageText(pageIndex);
+}
+```
+
+### 4.13 Service Worker vs Web Worker (OCR #19)
+
+**문제:** Tesseract.js 같은 라이브러리는 Service Worker 환경에서 "Worker is not defined" 에러 발생
+
+**이유:** Service Worker 컨텍스트에서는 Web Worker를 생성할 수 없음
+
+**해결책: Web Worker 사용**
+```javascript
+// Web Worker 초기화
+let ocrWorker = new Worker('ocr-worker.js');
+
+ocrWorker.addEventListener('message', (event) => {
+    const { type, data } = event.data;
+
+    switch (type) {
+        case 'OCR_PROGRESS':
+            updateProgress(data);
+            break;
+        case 'COMPLETE':
+            handleComplete(data);
+            break;
+        case 'ERROR':
+            handleError(data.error);
+            break;
+    }
+});
+
+// Worker에 작업 전송
+function processImage(file) {
+    return new Promise((resolve, reject) => {
+        const handleMessage = (event) => {
+            if (event.data.type === 'COMPLETE') {
+                ocrWorker.removeEventListener('message', handleMessage);
+                resolve(event.data.text);
+            }
+        };
+
+        ocrWorker.addEventListener('message', handleMessage);
+        ocrWorker.postMessage({
+            type: 'PROCESS_IMAGE',
+            data: { imageData: file.arrayBuffer, language: 'kor+eng' }
+        });
+    });
+}
+```
+
+**ocr-worker.js:**
+```javascript
+importScripts('https://cdn.jsdelivr.net/npm/tesseract.js@5');
+
+self.addEventListener('message', async (event) => {
+    const { type, data } = event.data;
+
+    if (type === 'PROCESS_IMAGE') {
+        const blob = new Blob([data.imageData], { type: 'image/jpeg' });
+
+        const { data: result } = await Tesseract.recognize(
+            blob,
+            data.language,
+            {
+                logger: (m) => {
+                    if (m.status === 'recognizing text') {
+                        self.postMessage({
+                            type: 'OCR_PROGRESS',
+                            data: { progress: Math.round(m.progress * 100) }
+                        });
+                    }
+                }
+            }
+        );
+
+        self.postMessage({
+            type: 'COMPLETE',
+            data: { text: result.text }
+        });
+    }
+});
+```
+
+**Service Worker 정리:**
+```javascript
+// 기존 Service Worker 언레지스터 (Web Worker 전환 시)
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+            registration.unregister();
+            console.log('[Cleanup] Service Worker unregistered');
+        });
+    });
+}
+```
+
 ---
 
 ## 5. 자주 발생하는 버그와 해결책
