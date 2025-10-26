@@ -756,4 +756,188 @@ const defaultColor = '#d4af37';  // 또는 var(--gold-primary)
 
 ---
 
+## Phase 3 마무리 - 서비스 연동 (2025-01-26)
+
+새 서비스 개발 완료 후 **필수 작업**: baal.co.kr과 diora.co.kr에 서비스 추가
+
+### 🎯 작업 순서
+
+1. **Phase 3 서비스 개발 완료**
+2. **Phase 2 체크리스트 검증** (버튼 스타일, 다크모드 등)
+3. **서비스 Git 커밋 & 푸시** (개별 서비스)
+4. ✅ **baal.co.kr 추가** (사이드바 + 그리드 카드)
+5. ✅ **diora.co.kr 추가** (RelatedServices.tsx + CSS 정렬)
+6. **Git 커밋 & 푸시** (baal, diora)
+7. **배포 확인** (Cloudflare Pages 자동 배포, 5-10분 소요)
+
+---
+
+### 1️⃣ baal.co.kr 서비스 추가
+
+**파일**: `G:\hddcode\baal\index.html`
+
+#### (1) 좌측 사이드바 추가
+
+**위치**: `<nav class="sidebar-nav">` 내부, 기존 서비스 아래
+
+```html
+<div class="nav-item" onclick="window.open('https://서비스명.baal.co.kr', '_blank')">서비스 한글명</div>
+```
+
+**예시**:
+```html
+<div class="nav-item" onclick="window.open('https://barcode.baal.co.kr', '_blank')">바코드 생성기</div>
+```
+
+#### (2) 메인 그리드 카드 추가
+
+**위치**: `<div class="services-grid">` 내부, 기존 카드 아래
+
+```html
+<div class="service-card" onclick="window.open('https://서비스명.baal.co.kr', '_blank')">
+    <h3 class="service-title">🔢 서비스 제목</h3>
+    <p class="service-subtitle">한 줄 설명</p>
+    <p class="service-description">상세 설명 2-3문장. 기존 카드와 비슷한 길이로 작성.</p>
+    <div class="service-features">
+        <span class="feature-tag">🎨 기능1</span>
+        <span class="feature-tag">📦 기능2</span>
+        <span class="feature-tag">💾 다운로드</span>
+        <span class="feature-tag">🌐 한/영 지원</span>
+        <span class="feature-tag">💰 100% 무료</span>
+    </div>
+    <button class="service-button" onclick="event.stopPropagation(); window.open('https://서비스명.baal.co.kr', '_blank')">사용하기 →</button>
+</div>
+```
+
+**주의사항**:
+- ✅ 버튼 텍스트: **"사용하기 →"** (~~"무료로 사용하기"~~ 사용 금지)
+- ✅ `event.stopPropagation()` 필수 (카드/버튼 클릭 충돌 방지)
+- ✅ 설명 길이: 기존 카드와 비슷하게 (너무 길거나 짧으면 안됨)
+- ✅ Feature 태그: 7-8개 권장 (마지막은 `💰 100% 무료`)
+- ✅ 이모지: 서비스 컨셉에 맞게 선택
+
+---
+
+### 2️⃣ diora.co.kr 서비스 추가
+
+**파일**: `G:\hddcode\diora\src\components\RelatedServices\RelatedServices.tsx`
+
+#### (1) allServices 배열에 추가
+
+**위치**: `allServices` 배열 내부, 기존 서비스 아래
+
+```tsx
+{
+  id: 'service-id',  // 영문 소문자 (예: 'barcode')
+  icon: '🔢',  // 서비스 컨셉 이모지
+  title: '서비스 한글명',
+  subtitle: '한 줄 설명',
+  englishTitle: 'ENGLISH TITLE (대문자)',
+  description: '상세 설명 2-3문장. 기존 서비스와 비슷한 길이로 작성. API 키 필요 여부, 주요 기능, 활용 방법 포함.',
+  features: [
+    '🔢 주요 기능1 (구체적으로)',
+    '✅ 주요 기능2',
+    '🎨 커스터마이징',
+    '📏 크기/옵션 조절',
+    '💾 다운로드 형식',
+    '🌐 다국어 지원 (한/영)',
+    '💰 100% 무료'
+  ],
+  useCases: '활용 분야 나열 (쉼표 구분, 6-8개)',
+  url: 'https://서비스명.baal.co.kr'
+}
+```
+
+**주의사항**:
+- ✅ Description: 150-200자 내외 (기존 서비스 참고)
+- ✅ Features: 7-8개 (마지막은 항상 `💰 100% 무료`)
+- ✅ useCases: 구체적이고 다양하게 (최소 6개)
+- ✅ 버튼 텍스트: TSX 파일에 하드코딩된 **"사용하기 →"**
+
+#### (2) CSS 버튼 수평 정렬 확인 (필수!)
+
+**파일**: `G:\hddcode\diora\src\components\RelatedServices\RelatedServices.css`
+
+```css
+/* 카드에 flexbox 적용 */
+.service-card-related {
+  display: flex;
+  flex-direction: column;
+  /* 기타 스타일... */
+}
+
+/* Features가 남은 공간 차지하여 버튼을 하단으로 밀어냄 */
+.service-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  flex: 1;  /* ⚠️ 필수! */
+  align-content: flex-start;  /* ⚠️ 필수! */
+}
+```
+
+**효과**: 카드 높이가 달라도 "사용하기 →" 버튼이 항상 하단에 수평 정렬됨
+
+---
+
+### ⚠️ 자주 하는 실수
+
+1. ❌ 버튼 텍스트 "무료로 사용하기 →" 사용
+   - ✅ **"사용하기 →"** 사용 (feature-tag에 이미 "💰 100% 무료" 있음)
+
+2. ❌ diora.co.kr CSS에 flex 스타일 누락
+   - ✅ `.service-card-related`에 `display: flex; flex-direction: column;`
+   - ✅ `.service-features`에 `flex: 1; align-content: flex-start;`
+
+3. ❌ 설명 길이 불일치 (너무 길거나 짧음)
+   - ✅ 기존 서비스와 비슷한 길이로 작성 (150-200자)
+
+4. ❌ Feature 태그 개수 부족/과다
+   - ✅ 7-8개 권장 (마지막은 항상 `💰 100% 무료`)
+
+5. ❌ `event.stopPropagation()` 누락 (baal.co.kr 버튼)
+   - ✅ 버튼 onclick에 반드시 추가하여 카드 클릭과 충돌 방지
+
+6. ❌ 이모지 중복 또는 부적절
+   - ✅ 기존 서비스와 중복 피하고 컨셉에 맞게 선택
+
+---
+
+### 🎯 배포 후 확인
+
+1. **시크릿 모드**에서 먼저 확인 (캐시 없음)
+2. 일반 브라우저에서 안 보이면 **하드 새로고침**:
+   - Windows: `Ctrl + Shift + R` 또는 `Ctrl + F5`
+   - Mac: `Cmd + Shift + R`
+3. Cloudflare Pages 자동 배포: 보통 **5-10분** 내 반영
+4. 브라우저 캐시 문제일 경우 최대 15분 대기
+
+---
+
+### 📋 최종 체크리스트
+
+**baal.co.kr**:
+- [ ] 좌측 사이드바에 서비스 추가
+- [ ] 메인 그리드에 서비스 카드 추가
+- [ ] 버튼 텍스트: "사용하기 →"
+- [ ] `event.stopPropagation()` 포함
+- [ ] Feature 태그 7-8개
+- [ ] 설명 길이 기존 서비스와 유사
+
+**diora.co.kr**:
+- [ ] RelatedServices.tsx에 서비스 객체 추가
+- [ ] 버튼 텍스트: "사용하기 →"
+- [ ] Description 150-200자
+- [ ] Features 7-8개 (마지막 `💰 100% 무료`)
+- [ ] useCases 6-8개
+- [ ] CSS에 flex 정렬 스타일 확인
+
+**Git 커밋**:
+- [ ] baal.co.kr 커밋 & 푸시
+- [ ] diora.co.kr 커밋 & 푸시
+- [ ] 배포 확인 (5-10분 대기)
+
+---
+
 **질문이나 문제가 있으면 tools-plan.html을 참고하거나 개발 로그에 기록하세요!**
