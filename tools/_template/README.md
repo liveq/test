@@ -579,4 +579,181 @@ HTML 요소에 `data-ko`, `data-en` 속성 확인:
 
 ---
 
+## Phase 2 개발 교훈 (2025-01-26)
+
+Phase 2 개발 중 발생했던 **치명적인 버그들**을 정리했습니다. **Phase 3 개발 시 반드시 확인하세요!**
+
+### ⚠️ 버튼 스타일 오류 (치명적!)
+
+**문제**: 버튼이 완전히 보이지 않음
+
+**원인**:
+```css
+/* ❌ 잘못된 예 - 흰 배경에 흰 글씨 */
+.custom-btn {
+    background: var(--bg-secondary);  /* 흰색 배경 */
+    color: white;  /* 흰색 글씨 = 안 보임! */
+}
+
+.custom-btn.active {
+    background: var(--primary-color);  /* 존재하지 않는 변수! */
+}
+```
+
+**해결**:
+```css
+/* ✅ 올바른 예 - 골드 테마 사용 */
+.custom-btn {
+    background: var(--gold-gradient);  /* 골드 그라디언트 */
+    color: white;  /* 명확하게 보임 */
+    border: 2px solid var(--gold-primary);
+}
+
+.custom-btn:hover,
+.custom-btn.active {
+    background: var(--gold-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+```
+
+**규칙**:
+- ✅ 모든 버튼은 `var(--gold-gradient)` 또는 `var(--gold-primary)` 사용
+- ✅ `var(--primary-color)` 같은 정의되지 않은 변수 절대 사용 금지
+- ✅ 탭/토글 버튼 기본 상태는 `color: var(--text-primary)` 사용 (배경색 대비)
+- ✅ active 상태는 명확하게 골드 테마로 강조
+
+---
+
+### ⚠️ 툴팁 오버플로우
+
+**문제**: "더 많은 도구" 툴팁이 화면 밖으로 넘어감
+
+**해결**: 툴팁을 버튼 왼쪽에 배치
+```css
+/* ✅ _common/common.css에 이미 추가됨 */
+.tools-toggle .tooltip {
+    right: 100%;              /* 왼쪽에 배치 */
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 10px;
+}
+```
+
+**주의**: 새 서비스는 `_common/common.css`를 복사하면 자동으로 적용됨
+
+---
+
+### ⚠️ 기본 색상 선택
+
+**규칙**: 모든 서비스의 기본 색상은 **디오라 골드 (#d4af37)** 사용
+
+**예시**:
+```javascript
+// ❌ 빨간색 사용 금지
+const defaultColor = '#FF5733';
+
+// ✅ 디오라 골드 사용
+const defaultColor = '#d4af37';  // 또는 var(--gold-primary)
+```
+
+---
+
+### ⚠️ 접근성 설명 필수
+
+색상 대비, 등급 등 **전문 용어**를 사용하는 경우 **반드시 설명 추가**:
+
+```html
+<!-- ✅ WCAG 등급 설명 예시 -->
+<p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 15px;"
+   data-ko="※ AAA: 최고 수준(7:1 이상), AA: 표준 수준(4.5:1 이상), Fail: 기준 미달(3:1 미만)"
+   data-en="※ AAA: Highest level (7:1+), AA: Standard level (4.5:1+), Fail: Below standard (<3:1)">
+    ※ AAA: 최고 수준(7:1 이상), AA: 표준 수준(4.5:1 이상), Fail: 기준 미달(3:1 미만)
+</p>
+```
+
+---
+
+### ⚠️ 다크모드 필수 테스트
+
+**체크리스트**:
+- [ ] 모든 버튼이 라이트/다크 모드에서 명확히 보임
+- [ ] 텍스트 색상이 배경과 대비됨 (`var(--text-primary)` 사용)
+- [ ] 입력창 배경/글자 색상이 구분됨
+- [ ] 선택된 요소가 양쪽 모드에서 강조됨
+
+**테스트 방법**:
+1. 🌙 버튼 클릭하여 다크모드 전환
+2. 모든 버튼, 입력창, 텍스트 가독성 확인
+3. 탭 전환 시 active 상태 확인
+
+---
+
+### ⚠️ CSS 변수 사용 규칙
+
+**사용 가능한 변수** (`_common/common.css` 참고):
+
+**색상**:
+- `var(--gold-primary)` - #d4af37 (기본 골드)
+- `var(--gold-secondary)` - #DAA520 (진한 골드)
+- `var(--gold-gradient)` - 골드 그라디언트
+- `var(--text-primary)` - 주 텍스트 색상
+- `var(--text-secondary)` - 보조 텍스트 색상
+- `var(--bg-primary)` - 주 배경색
+- `var(--bg-secondary)` - 보조 배경색
+- `var(--border-color)` - 테두리 색상
+
+**그림자**:
+- `var(--shadow-sm)` - 작은 그림자
+- `var(--shadow-md)` - 중간 그림자
+- `var(--shadow-lg)` - 큰 그림자
+
+**❌ 절대 사용 금지**:
+- `var(--primary-color)` - 정의되지 않음!
+- 하드코딩된 색상 값 (가급적 변수 사용)
+
+---
+
+### ⚠️ Phase 2 주요 수정 이력
+
+1. **도구 버튼 아이콘**: 텍스트+이모지 → 이모지만 표시
+2. **버튼 가시성**: 흰 배경+흰 글씨 → 골드 그라디언트
+3. **활성 버튼**: 정의되지 않은 변수 → `var(--gold-gradient)`
+4. **툴팁 위치**: 오른쪽 오버플로우 → 왼쪽 배치
+5. **기본 색상**: 빨간색 → 디오라 골드
+6. **접근성 설명**: 없음 → 등급 설명 추가
+
+---
+
+## Phase 3 개발 시 체크리스트 (필수!)
+
+새 서비스 개발 전 **반드시 확인**:
+
+### HTML 구조
+- [ ] `_common/common.css` 링크 (NOT `../_template/`)
+- [ ] `_common/common.js` 링크 (NOT `../_template/`)
+- [ ] 도구 버튼에 `<span class="tooltip">` 포함
+- [ ] 모든 텍스트에 `data-ko`, `data-en` 속성
+
+### CSS 스타일
+- [ ] 버튼: `background: var(--gold-gradient)` 사용
+- [ ] 버튼 글자: `color: white` 사용
+- [ ] 탭/토글 기본: `color: var(--text-primary)` 사용
+- [ ] 활성 상태: `var(--gold-gradient)` + `transform: translateY(-2px)`
+- [ ] `var(--primary-color)` 같은 미정의 변수 없음
+
+### 기능
+- [ ] 기본 색상: #d4af37 (디오라 골드)
+- [ ] 전문 용어에 설명 추가
+- [ ] 다크모드 테스트 완료
+- [ ] 버튼 hover/active 상태 명확
+
+### 배포 전
+- [ ] 라이트 모드에서 모든 요소 확인
+- [ ] 다크 모드에서 모든 요소 확인
+- [ ] 툴팁이 화면 안에 표시되는지 확인
+- [ ] 모든 버튼이 클릭/호버 시 시각적 피드백 있음
+
+---
+
 **질문이나 문제가 있으면 tools-plan.html을 참고하거나 개발 로그에 기록하세요!**
