@@ -1260,8 +1260,373 @@ CNAME  servicename   baal-servicename.pages.dev
 
 ---
 
+## 11. 모듈 Import 문제 해결 (배경 제거 #18)
+
+### 11.1 CDN별 특성과 해결책
+
+**문제 상황:**
+```javascript
+import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.mjs';
+// ❌ Uncaught TypeError: Failed to resolve module specifier "ndarray"
+```
+
+**원인:**
+- 라이브러리 내부에서 `import ndarray from 'ndarray'` 같은 bare module specifier 사용
+- jsdelivr는 의존성을 번들링하지 않고 원본 그대로 제공
+- 브라우저는 bare module specifier를 해석할 수 없음
+
+### 11.2 해결책 1: esm.sh 사용 (권장 ⭐)
+
+**가장 간단하고 효과적인 방법:**
+
+```javascript
+// ✅ esm.sh가 자동으로 의존성 해결
+import { removeBackground } from 'https://esm.sh/@imgly/background-removal@1.4.5';
+```
+
+**esm.sh의 장점:**
+- 모든 의존성을 자동으로 번들링
+- bare module specifier → 실제 URL로 변환
+- TypeScript 지원
+- import map 불필요
+
+**적용 예시 (배경 제거 #18):**
+```html
+<script type="module">
+    // jsdelivr 대신 esm.sh 사용
+    import { removeBackground } from 'https://esm.sh/@imgly/background-removal@1.4.5';
+
+    // 바로 사용 가능
+    const blob = await removeBackground(imageFile);
+</script>
+```
+
+### 11.3 해결책 2: Import Map 사용 (복잡함 ⚠️)
+
+**모든 의존성을 수동으로 매핑:**
+
+```html
+<script type="importmap">
+{
+    "imports": {
+        "@imgly/background-removal": "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.mjs",
+        "ndarray": "https://esm.sh/ndarray@1.0.19",
+        "ndarray-ops": "https://esm.sh/ndarray-ops@1.2.2",
+        "ndarray-pack": "https://esm.sh/ndarray-pack@1.2.1",
+        "jpeg-js": "https://esm.sh/jpeg-js@0.4.4",
+        "pngjs": "https://esm.sh/pngjs@7.0.0"
+        // ... 수십 개의 의존성 계속
+    }
+}
+</script>
+```
+
+**단점:**
+- 의존성을 직접 찾아야 함 (시간 낭비)
+- 버전 관리 어려움
+- 의존성의 의존성도 추가해야 함 (재귀적)
+
+### 11.4 CDN 비교표
+
+| CDN | 의존성 자동 해결 | 속도 | TypeScript | 추천 |
+|-----|---------------|------|-----------|------|
+| **esm.sh** | ✅ 자동 | 빠름 | ✅ | ⭐⭐⭐⭐⭐ |
+| **unpkg** | ⚠️ 부분 | 빠름 | ❌ | ⭐⭐⭐ |
+| **skypack** | ✅ 자동 | 보통 | ✅ | ⭐⭐⭐⭐ |
+| **jsdelivr** | ❌ 수동 | 매우 빠름 | ❌ | ⭐⭐ |
+| **cdnjs** | ❌ 수동 | 빠름 | ❌ | ⭐ |
+
+### 11.5 CDN 선택 기준
+
+#### 1순위: esm.sh
+```javascript
+// 복잡한 의존성이 있는 NPM 패키지
+import { removeBackground } from 'https://esm.sh/@imgly/background-removal@1.4.5';
+import { Document } from 'https://esm.sh/docx@8.5.0';
+```
+
+**사용 시기:**
+- NPM 패키지를 브라우저에서 사용할 때
+- 의존성이 많은 라이브러리
+- TypeScript 라이브러리
+
+#### 2순위: jsdelivr
+```html
+<!-- 단순한 UMD/IIFE 라이브러리 -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+```
+
+**사용 시기:**
+- 전역 변수로 제공되는 라이브러리
+- 의존성이 없는 단순 라이브러리
+- CDN 속도가 중요할 때
+
+### 11.6 실전 예제: 배경 제거 기능
+
+**Before (작동 안 함):**
+```javascript
+import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/index.mjs';
+// ❌ ndarray 모듈을 찾을 수 없음
+```
+
+**After (작동함):**
+```javascript
+import { removeBackground } from 'https://esm.sh/@imgly/background-removal@1.4.5';
+// ✅ 모든 의존성 자동 해결
+
+const blob = await removeBackground(imageFile, {
+    progress: (key, current, total) => {
+        console.log(`${key}: ${Math.round((current/total)*100)}%`);
+    }
+});
+```
+
+### 11.7 트러블슈팅 체크리스트
+
+Import 에러가 발생하면 다음 순서로 시도:
+
+1. **esm.sh로 변경** (90% 해결)
+   ```javascript
+   // jsdelivr → esm.sh
+   import { pkg } from 'https://esm.sh/package-name@version';
+   ```
+
+2. **unpkg로 시도**
+   ```javascript
+   import { pkg } from 'https://unpkg.com/package-name@version?module';
+   ```
+
+3. **skypack으로 시도**
+   ```javascript
+   import { pkg } from 'https://cdn.skypack.dev/package-name@version';
+   ```
+
+4. **번들러 사용** (Vite, esbuild)
+   ```bash
+   npm install package-name
+   npx vite build
+   ```
+
+### 11.8 교훈
+
+> **"공식 문서대로"보다 "작동하는 게 먼저"**
+
+- CDN URL 한 줄 바꾸는 게 import map 수십 줄보다 빠름
+- 의존성 문제는 esm.sh가 90% 해결
+- jsdelivr는 속도는 빠르지만 모듈 시스템엔 부적합
+
+**시간 절약:**
+- Import map 수정: 몇 시간 소요
+- esm.sh 변경: 1분 소요
+
+---
+
+## 12. 실시간 미리보기 패턴 (배경 제거 #18)
+
+### 12.1 Canvas를 이용한 배경색 실시간 적용
+
+**문제:**
+- 사용자가 배경색을 선택할 때마다 다운로드해서 확인하는 건 불편함
+- 배경색을 바꿀 때마다 즉시 미리보기에 반영되어야 함
+
+**해결책:**
+
+```javascript
+// 배경색 버튼 클릭 시 실시간 미리보기 업데이트
+document.querySelectorAll('.bg-color-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const selectedColor = btn.dataset.color;
+
+        // 활성화 상태 변경
+        document.querySelectorAll('.bg-color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // 처리 완료된 이미지가 있으면 미리보기 업데이트
+        if (currentImage && currentImage.resultBlob) {
+            await updatePreviewWithBackground(currentImage.resultBlob, selectedColor);
+        }
+    });
+});
+
+// 배경색이 적용된 미리보기 업데이트
+async function updatePreviewWithBackground(resultBlob, bgColor) {
+    const resultOverlay = document.getElementById('resultOverlay');
+    if (!resultOverlay) return;
+
+    let previewUrl;
+
+    if (bgColor === 'transparent') {
+        // 투명 배경: 원본 결과 이미지 사용
+        previewUrl = URL.createObjectURL(resultBlob);
+    } else {
+        // 배경색 적용: Canvas로 합성
+        const img = new Image();
+        img.src = URL.createObjectURL(resultBlob);
+        await img.decode();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+
+        // 배경색 채우기
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 투명 이미지 위에 그리기
+        ctx.drawImage(img, 0, 0);
+
+        // Blob으로 변환
+        const blob = await new Promise((resolve) => {
+            canvas.toBlob(resolve, 'image/png');
+        });
+
+        previewUrl = URL.createObjectURL(blob);
+        URL.revokeObjectURL(img.src);
+    }
+
+    // 미리보기 이미지 업데이트
+    const resultImg = resultOverlay.querySelector('img');
+    if (resultImg) {
+        const oldSrc = resultImg.src;
+        resultImg.src = previewUrl;
+
+        // 이전 URL 정리 (메모리 누수 방지)
+        if (oldSrc && oldSrc.startsWith('blob:')) {
+            setTimeout(() => URL.revokeObjectURL(oldSrc), 100);
+        }
+    }
+}
+```
+
+**핵심 포인트:**
+1. **Canvas 사용**: 배경색과 투명 이미지 합성
+2. **Blob URL 관리**: 이전 URL은 revokeObjectURL로 정리
+3. **비동기 처리**: img.decode()로 이미지 로드 완료 대기
+4. **조건부 처리**: 투명 배경은 원본 사용, 색상 배경은 합성
+
+### 12.2 커스텀 색상 팔레트 버튼
+
+**HTML:**
+```html
+<div class="bg-color-options">
+    <button class="bg-color-btn transparent active" data-color="transparent" title="투명"></button>
+    <button class="bg-color-btn" data-color="#ffffff" style="background: #ffffff;" title="흰색"></button>
+    <button class="bg-color-btn" data-color="#000000" style="background: #000000;" title="검정"></button>
+    <button class="bg-color-btn" data-color="#d4af37" style="background: #d4af37;" title="골드"></button>
+
+    <!-- 커스텀 색상 선택 버튼 -->
+    <button class="bg-color-btn custom-color-btn" id="customColorBtn" title="색상 선택">
+        <span style="font-size: 24px; font-weight: bold;">+</span>
+        <input type="color" id="customColorPicker" style="position: absolute; opacity: 0; pointer-events: none;">
+    </button>
+</div>
+```
+
+**CSS:**
+```css
+/* 커스텀 색상 버튼 - 무지개 그라디언트 */
+.bg-color-btn.custom-color-btn {
+    background: linear-gradient(135deg,
+        #ff0000 0%, #ff7f00 16.66%, #ffff00 33.33%,
+        #00ff00 50%, #0000ff 66.66%, #8b00ff 83.33%, #ff0000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* + 기호 스타일 (흰색 + 검정 테두리) */
+.bg-color-btn.custom-color-btn span {
+    color: white;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000,
+        0 0 5px rgba(0, 0, 0, 0.5);
+}
+```
+
+**JavaScript:**
+```javascript
+// 커스텀 색상 선택
+const customColorBtn = document.getElementById('customColorBtn');
+const customColorPicker = document.getElementById('customColorPicker');
+
+// + 버튼 클릭 시 색상 팔레트 열기
+customColorBtn.addEventListener('click', () => {
+    customColorPicker.click();
+});
+
+// 색상 선택 시
+customColorPicker.addEventListener('change', async (e) => {
+    const customColor = e.target.value;
+
+    // 선택한 색상을 버튼에 적용
+    customColorBtn.style.background = customColor;
+
+    // 활성화 상태로 변경
+    selectedBgColor = customColor;
+    document.querySelectorAll('.bg-color-btn').forEach(b => b.classList.remove('active'));
+    customColorBtn.classList.add('active');
+
+    // 실시간 미리보기 업데이트
+    const currentImg = uploadedImages[currentImageIndex];
+    if (currentImg && currentImg.resultBlob) {
+        await updatePreviewWithBackground(currentImg.resultBlob, customColor);
+    }
+});
+```
+
+**동작 방식:**
+1. `+` 버튼 클릭 → 숨겨진 `<input type="color">` 클릭
+2. 브라우저 색상 팔레트 열림
+3. 색상 선택 → `+` 버튼 배경이 선택한 색으로 변경
+4. 미리보기에 즉시 반영
+
+**장점:**
+- 사용자가 원하는 임의의 색상 선택 가능
+- 브라우저 기본 색상 팔레트 활용 (크로스 브라우저 지원)
+- 선택한 색상을 버튼에 표시해서 직관적
+
+### 12.3 메모리 관리 패턴
+
+**Blob URL 누수 방지:**
+
+```javascript
+// ❌ 나쁜 예: Blob URL이 계속 쌓임
+resultImg.src = URL.createObjectURL(blob);
+
+// ✅ 좋은 예: 이전 URL 정리
+const oldSrc = resultImg.src;
+resultImg.src = URL.createObjectURL(blob);
+
+if (oldSrc && oldSrc.startsWith('blob:')) {
+    setTimeout(() => URL.revokeObjectURL(oldSrc), 100);
+}
+```
+
+**사용 후 즉시 정리:**
+
+```javascript
+// 임시 이미지 로드
+const img = new Image();
+img.src = URL.createObjectURL(blob);
+await img.decode();
+
+// Canvas 작업
+const canvas = document.createElement('canvas');
+// ... 작업 ...
+
+// 사용 완료 후 정리
+URL.revokeObjectURL(img.src);
+```
+
+---
+
 **이 가이드를 따르면 버그 없이 일관된 품질의 서비스를 빠르게 개발할 수 있습니다.**
 
-**최종 업데이트:** 2025-10-26
+**최종 업데이트:** 2025-10-27
 **작성자:** BAAL Team
 **기여:** Claude Code
