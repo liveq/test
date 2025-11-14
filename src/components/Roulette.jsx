@@ -141,7 +141,7 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill="#fff"
-                    fontSize="24"
+                    fontSize="18"
                     fontWeight="bold"
                     style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
                   >
@@ -149,19 +149,29 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                   </text>
                   <text
                     x={textX}
-                    y={textY + 20}
+                    y={textY + 18}
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill="#fff"
-                    fontSize="16"
+                    fontSize="14"
                   >
                     {prize.percentage}%
                   </text>
                 </g>
               )
             })}
-            {/* 중앙 원 */}
-            <circle cx="200" cy="200" r="30" fill="#1a1a2e" stroke="#fff" strokeWidth="3" />
+            {/* 중앙 원 - 흰 배경 */}
+            <circle cx="200" cy="200" r="50" fill="#fff" stroke="#FF69B4" strokeWidth="4" />
+
+            {/* 중앙 로고 */}
+            <image
+              href="/images/logo-symbol.png"
+              x="160"
+              y="160"
+              width="80"
+              height="80"
+              style={{ pointerEvents: 'none' }}
+            />
           </svg>
         </div>
       </div>

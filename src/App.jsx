@@ -4,9 +4,9 @@ import SettingsMenu from './components/SettingsMenu'
 import './App.css'
 
 const DEFAULT_PRIZES = [
-  { id: 1, name: '1등', percentage: 10, color: '#FFD700' },
-  { id: 2, name: '2등', percentage: 40, color: '#C0C0C0' },
-  { id: 3, name: '3등', percentage: 50, color: '#CD7F32' }
+  { id: 1, name: '치약,칫솔,구강스프레이(2+1)세트', percentage: 10, color: '#FF69B4' }, // 연핑크
+  { id: 2, name: '구강스프레이 단품', percentage: 40, color: '#7FFFD4' }, // 민트
+  { id: 3, name: '마우스워시 단품', percentage: 50, color: '#FFB6C1' } // 연한 핑크
 ]
 
 function App() {
@@ -73,11 +73,11 @@ function App() {
     spinningAudioRef.current?.pause()
 
     // 당첨 등수에 따른 효과음 재생
-    if (winningPrize.name === '1등') {
+    if (winningPrize.id === 1) {
       playAudio(prize1AudioRef)
-    } else if (winningPrize.name === '2등') {
+    } else if (winningPrize.id === 2) {
       playAudio(prize2AudioRef)
-    } else if (winningPrize.name === '3등') {
+    } else if (winningPrize.id === 3) {
       playAudio(prize3AudioRef)
     }
 
@@ -89,6 +89,18 @@ function App() {
 
   return (
     <div className="app">
+      {/* 상단 코랄리에 로고 배너 */}
+      <header className="brand-header">
+        <img
+          src="/images/logo-banner.png"
+          alt="CORALIER"
+          className="brand-logo"
+          onError={(e) => {
+            e.target.style.display = 'none'
+          }}
+        />
+      </header>
+
       <button
         className="menu-button"
         onClick={() => setIsMenuOpen(!isMenuOpen)}

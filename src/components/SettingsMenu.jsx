@@ -93,9 +93,9 @@ function SettingsMenu({ isOpen, onClose, prizes, setPrizes }) {
   const handleReset = () => {
     if (window.confirm('설정을 초기화하시겠습니까?')) {
       const defaultPrizes = [
-        { id: 1, name: '1등', percentage: 10, color: '#FFD700' },
-        { id: 2, name: '2등', percentage: 40, color: '#C0C0C0' },
-        { id: 3, name: '3등', percentage: 50, color: '#CD7F32' }
+        { id: 1, name: '치약,칫솔,구강스프레이(2+1)세트', percentage: 10, color: '#FF69B4' },
+        { id: 2, name: '구강스프레이 단품', percentage: 40, color: '#7FFFD4' },
+        { id: 3, name: '마우스워시 단품', percentage: 50, color: '#FFB6C1' }
       ]
       setTempPrizes(defaultPrizes)
     }
