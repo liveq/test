@@ -33,17 +33,16 @@
   object-fit: contain;
 }
 
-/* 플로팅 버튼 그룹 (헤더 바깥) */
+/* 플로팅 버튼 그룹 - 룰렛 프레임 우측 하단 */
 .floating-buttons {
   position: absolute;
-  top: calc(50% + 25px); /* 버튼 하나 크기만큼 아래로 이동 (잘림 방지) */
-  right: -70px; /* 헤더 완전히 바깥으로 배치 */
-  transform: translateY(-50%);
+  bottom: 20px; /* 하단에서 20px */
+  right: 20px; /* 우측에서 20px */
   z-index: 10000;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* 가로 배치 */
   gap: 15px;
-  align-items: flex-start; /* 볼륨 슬라이더 펼침 시 위치 고정 */
+  align-items: center;
 }
 
 /* 플로팅 버튼 공통 스타일 */
@@ -113,9 +112,9 @@
 /* 볼륨 조절 슬라이더 */
 .volume-control {
   position: absolute; /* floating-buttons의 flex 레이아웃에 영향 안 주도록 */
-  top: 100%; /* 볼륨 버튼 바로 아래 */
-  left: 0;
-  margin-top: 10px;
+  bottom: 100%; /* 볼륨 버튼 위로 */
+  right: 0;
+  margin-bottom: 10px;
   background: rgba(255, 255, 255, 0.95);
   border: 3px solid rgba(255, 105, 180, 0.8);
   border-radius: 25px;
@@ -125,13 +124,13 @@
   gap: 5px;
   width: 150px;
   box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3);
-  animation: slideDown 0.3s ease;
+  animation: slideUp 0.3s ease;
 }
 
-@keyframes slideDown {
+@keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -206,7 +205,8 @@
   }
 
   .floating-buttons {
-    right: -60px; /* 모바일에서도 헤더 완전히 바깥으로 */
+    bottom: 15px;
+    right: 15px;
     gap: 10px;
   }
 
