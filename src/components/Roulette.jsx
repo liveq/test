@@ -96,6 +96,22 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
 
     // 애니메이션 완료 후
     spinTimeoutRef.current = setTimeout(() => {
+      // 최종 회전 각도 확인
+      const finalRotation = (rotation + totalRotation) % 360
+      console.log('🏁 회전 완료! 최종 각도:', finalRotation.toFixed(1), '도')
+
+      // 12시 방향(0도)에 있어야 할 슬롯 확인
+      // finalRotation만큼 회전했으므로, 원래 -finalRotation 위치에 있던 슬롯이 0도에 옴
+      const slotAtTop = Math.round((-finalRotation / slotAngle + slotCount) % slotCount)
+      console.log('📍 12시 방향 슬롯:', slotAtTop + 1, '(슬롯 인덱스:', slotAtTop, ')')
+      console.log('🎯 당첨 슬롯:', winningPrize.slotIndex + 1, '(슬롯 인덱스:', winningPrize.slotIndex, ')')
+
+      if (slotAtTop !== winningPrize.slotIndex) {
+        console.error('❌ 불일치! 화면:', slotAtTop + 1, '번 / 당첨:', (winningPrize.slotIndex + 1), '번')
+      } else {
+        console.log('✅ 일치! 슬롯', (winningPrize.slotIndex + 1), '번이 정확히 12시 방향에 있습니다')
+      }
+
       setWinner(winningPrize)
       onSpinEnd(winningPrize)
       spinTimeoutRef.current = null
