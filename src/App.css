@@ -1,0 +1,100 @@
+.app {
+  width: 100%;
+  height: 100%;
+  max-width: 100vh;
+  max-height: 177.78vh; /* 9:16 비율 */
+  aspect-ratio: 9 / 16;
+  position: relative;
+  background: linear-gradient(135deg, #FFE4E1 0%, #B2F7EF 50%, #FFB6C1 100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 브랜드 헤더 */
+.brand-header {
+  width: 100%;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.brand-logo {
+  max-height: 60px;
+  max-width: 80%;
+  object-fit: contain;
+}
+
+/* 햄버거 메뉴 버튼 */
+.menu-button {
+  position: absolute;
+  top: 110px; /* 헤더 아래로 이동 */
+  right: 20px;
+  z-index: 1000;
+  background: rgba(255, 105, 180, 0.9); /* 코랄리에 핑크 */
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+}
+
+.menu-button:hover {
+  background: rgba(255, 105, 180, 1);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+.menu-button:active {
+  transform: scale(0.95);
+}
+
+.hamburger {
+  width: 24px;
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger span {
+  width: 100%;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .app {
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+
+  .brand-header {
+    padding: 15px;
+  }
+
+  .brand-logo {
+    max-height: 45px;
+  }
+
+  .menu-button {
+    top: 80px;
+    right: 15px;
+    padding: 10px;
+  }
+
+  .hamburger {
+    width: 20px;
+    height: 16px;
+  }
+}
