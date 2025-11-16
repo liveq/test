@@ -47,24 +47,48 @@ function App() {
 
     // 첫 번째 BGM 설정
     bgmAudioRef.current = new Audio(bgmPlaylistRef.current[0])
-    bgmAudioRef.current.volume = 0.5
+    bgmAudioRef.current.volume = volume / 100
+    bgmAudioRef.current.loop = false
 
     // 곡이 끝나면 다음 곡 재생 (연속재생)
-    bgmAudioRef.current.addEventListener('ended', () => {
+    const handleEnded = () => {
       currentBgmIndexRef.current = (currentBgmIndexRef.current + 1) % bgmPlaylistRef.current.length
       bgmAudioRef.current.src = bgmPlaylistRef.current[currentBgmIndexRef.current]
+      bgmAudioRef.current.volume = volume / 100 // 볼륨 재적용
       bgmAudioRef.current.play().catch(() => {})
-    })
+    }
 
-    // 1초 후 자동재생
-    setTimeout(() => {
+    bgmAudioRef.current.addEventListener('ended', handleEnded)
+
+    // 사용자 interaction 감지 후 자동재생
+    const tryAutoplay = () => {
       bgmAudioRef.current.play().then(() => {
         setIsMusicPlaying(true)
+        console.log('✅ 자동재생 성공')
       }).catch(() => {
-        console.log('자동재생이 차단되었습니다. 재생 버튼을 눌러주세요.')
+        console.log('⚠️ 자동재생 차단됨. 첫 클릭 후 재생됩니다.')
         setIsMusicPlaying(false)
       })
-    }, 1000)
+    }
+
+    // 1초 후 자동재생 시도
+    const autoplayTimer = setTimeout(tryAutoplay, 1000)
+
+    // 사용자 첫 interaction 시 음악 재생 (autoplay 실패 대비)
+    const startOnInteraction = () => {
+      if (!isMusicPlaying) {
+        bgmAudioRef.current.play().then(() => {
+          setIsMusicPlaying(true)
+          console.log('✅ 사용자 interaction 후 재생')
+        }).catch(() => {})
+      }
+      // 한 번만 실행 후 리스너 제거
+      document.removeEventListener('click', startOnInteraction)
+      document.removeEventListener('touchstart', startOnInteraction)
+    }
+
+    document.addEventListener('click', startOnInteraction, { once: true })
+    document.addEventListener('touchstart', startOnInteraction, { once: true })
 
     spinningAudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/spinning.mp3`)
     prize1AudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/prize1.mp3`)
@@ -72,7 +96,11 @@ function App() {
     prize3AudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/prize3.mp3`)
 
     return () => {
+      clearTimeout(autoplayTimer)
       bgmAudioRef.current?.pause()
+      bgmAudioRef.current?.removeEventListener('ended', handleEnded)
+      document.removeEventListener('click', startOnInteraction)
+      document.removeEventListener('touchstart', startOnInteraction)
     }
   }, [])
 
