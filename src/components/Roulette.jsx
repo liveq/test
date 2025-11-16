@@ -127,11 +127,18 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                 `Z`
               ].join(' ')
 
-              // 텍스트 위치 계산 (중간 각도)
+              // 텍스트는 각 상품의 대표 칸에만 표시
+              // 1등: 칸 0, 2등: 칸 2 (중간), 3등: 칸 7 (중간)
+              const showText = (
+                (slot.prize.id === 1 && slot.slotIndex === 0) ||
+                (slot.prize.id === 2 && slot.slotIndex === 2) ||
+                (slot.prize.id === 3 && slot.slotIndex === 7)
+              )
+
               const midAngle = (startAngle + endAngle) / 2
               const midRad = (midAngle - 90) * Math.PI / 180
-              const textX = 200 + 120 * Math.cos(midRad)
-              const textY = 200 + 120 * Math.sin(midRad)
+              const textX = 200 + 110 * Math.cos(midRad)
+              const textY = 200 + 110 * Math.sin(midRad)
 
               return (
                 <g key={`slot-${slot.slotIndex}`}>
@@ -141,18 +148,20 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                     stroke="#fff"
                     strokeWidth="3"
                   />
-                  <text
-                    x={textX}
-                    y={textY}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fill="#fff"
-                    fontSize="16"
-                    fontWeight="bold"
-                    style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
-                  >
-                    {slot.prize.name}
-                  </text>
+                  {showText && (
+                    <text
+                      x={textX}
+                      y={textY}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fill="#fff"
+                      fontSize="18"
+                      fontWeight="bold"
+                      style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                    >
+                      {slot.prize.name}
+                    </text>
+                  )}
                 </g>
               )
             })}
@@ -185,11 +194,6 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
         <div className="result-overlay" onClick={handleCloseModal}>
           <div className="result-card" onClick={(e) => e.stopPropagation()}>
             <h2>🎉 축하합니다! 🎉</h2>
-
-            {/* 디버깅 정보 */}
-            <div style={{ fontSize: '12px', color: '#999', marginBottom: '10px' }}>
-              ID: {winner.id} | 칸: {winner.slotIndex} / 9 | 확률: {winner.percentage}% | 이미지: prize-{winner.id}.png
-            </div>
 
             {/* 당첨 상품 이미지 */}
             <div className="prize-image-container">
