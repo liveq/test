@@ -200,16 +200,16 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
                   />
                   {slotCount <= 50 && (
                     <>
-                      {/* 칸 번호 (작게 상단에) */}
+                      {/* 칸 번호 - 배경색과 동일하게 (드래그 시에만 보임) */}
                       <text
                         x={textX}
                         y={textY - 15}
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        fill="#fff"
+                        fill={slot.prize.color}
                         fontSize={Math.max(10, fontSize - 4)}
                         fontWeight="bold"
-                        style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}
+                        style={{ userSelect: 'text' }}
                       >
                         {slot.slotIndex + 1}
                       </text>
