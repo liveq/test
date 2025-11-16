@@ -170,7 +170,7 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
 
             {/* 중앙 로고 */}
             <image
-              href="/images/logo-symbol.png"
+              href={`${import.meta.env.BASE_URL}images/logo-symbol.png`}
               x="160"
               y="160"
               width="80"

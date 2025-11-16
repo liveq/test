@@ -92,7 +92,7 @@ function App() {
       {/* 상단 코랄리에 로고 배너 */}
       <header className="brand-header">
         <img
-          src="/images/logo-banner.png"
+          src={`${import.meta.env.BASE_URL}images/logo-banner.png`}
           alt="CORALIER"
           className="brand-logo"
           onError={(e) => {
