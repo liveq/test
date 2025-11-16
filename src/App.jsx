@@ -89,9 +89,11 @@ function App() {
 
     setIsSpinning(true)
 
-    // BGM 중지, 회전 음악 재생
-    bgmAudioRef.current?.pause()
-    playAudio(spinningAudioRef)
+    // BGM은 계속 재생, 회전 음악만 추가 재생
+    if (spinningAudioRef.current) {
+      spinningAudioRef.current.currentTime = 0
+      spinningAudioRef.current.play().catch(() => {})
+    }
   }
 
   const handleSpinEnd = (winningPrize) => {
@@ -100,21 +102,20 @@ function App() {
     // 회전 음악 중지
     spinningAudioRef.current?.pause()
 
-    // 당첨 등수에 따른 효과음 재생
+    // BGM은 계속 재생, 효과음만 추가 재생
+    let prizeAudio = null
     if (winningPrize.id === 1) {
-      playAudio(prize1AudioRef)
+      prizeAudio = prize1AudioRef.current
     } else if (winningPrize.id === 2) {
-      playAudio(prize2AudioRef)
+      prizeAudio = prize2AudioRef.current
     } else if (winningPrize.id === 3) {
-      playAudio(prize3AudioRef)
+      prizeAudio = prize3AudioRef.current
     }
 
-    // 3초 후 BGM 재개 (재생 중이었다면)
-    setTimeout(() => {
-      if (isMusicPlaying) {
-        bgmAudioRef.current?.play().catch(() => {})
-      }
-    }, 3000)
+    if (prizeAudio) {
+      prizeAudio.currentTime = 0
+      prizeAudio.play().catch(() => {})
+    }
   }
 
   return (
