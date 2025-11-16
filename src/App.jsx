@@ -113,6 +113,15 @@ function App() {
         </div>
       </button>
 
+      {/* 새 플로팅 설정 버튼 */}
+      <button
+        className="floating-settings-button"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        aria-label="설정"
+      >
+        ⚙️
+      </button>
+
       <SettingsMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

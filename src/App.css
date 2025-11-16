@@ -85,6 +85,36 @@
   transition: all 0.3s ease;
 }
 
+/* 새 플로팅 설정 버튼 */
+.floating-settings-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 105, 180, 0.95);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-settings-button:hover {
+  background: rgba(255, 105, 180, 1);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 6px 25px rgba(255, 105, 180, 0.7);
+}
+
+.floating-settings-button:active {
+  transform: scale(1.0) rotate(90deg);
+}
+
 /* 모바일 최적화 */
 @media (max-width: 768px) {
   .app {
@@ -101,7 +131,7 @@
     max-width: 200px;
   }
 
-  
+
 
   .menu-button {
     top: 15px;
@@ -112,5 +142,13 @@
   .hamburger {
     width: 24px;
     height: 20px;
+  }
+
+  .floating-settings-button {
+    top: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
   }
 }
