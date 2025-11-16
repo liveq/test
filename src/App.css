@@ -43,7 +43,7 @@
 
 /* 플로팅 설정 버튼 */
 .floating-settings-button {
-  position: fixed;
+  position: absolute;
   top: 20px;
   right: 20px;
   z-index: 2000;

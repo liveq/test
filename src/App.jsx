@@ -88,8 +88,8 @@ function App() {
   }
 
   return (
-    <>
-      {/* 플로팅 설정 버튼 (.app 밖에 위치) */}
+    <div className="app">
+      {/* 플로팅 설정 버튼 (.app 내부, 우측 상단) */}
       <button
         className="floating-settings-button"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -98,9 +98,8 @@ function App() {
         ⚙️
       </button>
 
-      <div className="app">
-        {/* 상단 코랄리에 로고 */}
-        <header className="brand-header">
+      {/* 상단 코랄리에 로고 */}
+      <header className="brand-header">
           <img
             src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
             alt="CORALIER"
@@ -124,8 +123,7 @@ function App() {
           onSpinEnd={handleSpinEnd}
           isSpinning={isSpinning}
         />
-      </div>
-    </>
+    </div>
   )
 }
 
