@@ -30,7 +30,7 @@
   transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
 }
 
-/* 고정 포인터 */
+/* 고정 포인터 (화살표만) */
 .pointer {
   position: absolute;
   top: -20px;
@@ -43,18 +43,6 @@
   border-top: 40px solid #FF69B4;
   z-index: 10;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-}
-
-.pointer::after {
-  content: '';
-  position: absolute;
-  top: -40px;
-  left: -15px;
-  width: 30px;
-  height: 30px;
-  background: #FF69B4;
-  border-radius: 50%;
-  border: 3px solid white;
 }
 
 /* 스핀 버튼 */
