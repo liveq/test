@@ -51,6 +51,11 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
     }, 5000) // 5초 회전
   }
 
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setWinner(null)
+  }
+
   // 룰렛 휠 세그먼트 그리기
   const renderWheel = () => {
     const segments = []
@@ -187,13 +192,16 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
 
       {/* 결과 표시 */}
       {winner && (
-        <div className="result-overlay">
-          <div className="result-card">
+        <div className="result-overlay" onClick={handleCloseModal}>
+          <div className="result-card" onClick={(e) => e.stopPropagation()}>
             <h2>축하합니다!</h2>
             <div className="winner-badge" style={{ background: winner.color }}>
               {winner.name}
             </div>
             <p>당첨되었습니다!</p>
+            <button className="close-modal-button" onClick={handleCloseModal}>
+              닫기
+            </button>
           </div>
         </div>
       )}
