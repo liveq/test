@@ -7,6 +7,7 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
   const wheelRef = useRef(null)
   const spinTimeoutRef = useRef(null)
   const currentWinnerRef = useRef(null)
+  const rotationRef = useRef(0) // 최신 rotation 값을 추적하는 ref
 
   // slotConfig 기반 룰렛 칸 생성
   const getWheelSlots = () => {
@@ -90,14 +91,15 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
 
     setRotation(prev => {
       const newRotation = prev + totalRotation
+      rotationRef.current = newRotation // ref에 최신 값 저장
       console.log('🎡 누적 회전:', newRotation.toFixed(1), '도 (이전:', prev.toFixed(1), '도)')
       return newRotation
     })
 
     // 애니메이션 완료 후
     spinTimeoutRef.current = setTimeout(() => {
-      // 최종 회전 각도 확인
-      const finalRotation = (rotation + totalRotation) % 360
+      // 최종 회전 각도 확인 (ref에서 최신 값 읽기)
+      const finalRotation = rotationRef.current % 360
       console.log('🏁 회전 완료! 최종 각도:', finalRotation.toFixed(1), '도')
 
       // 12시 방향(0도)에 있어야 할 슬롯 확인
