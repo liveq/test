@@ -4,10 +4,10 @@
   max-width: 100vh;
   max-height: 177.78vh; /* 9:16 비율 */
   aspect-ratio: 9 / 16;
-  position: relative;
+  position: relative; /* floating-buttons의 absolute 기준점 */
   background: linear-gradient(135deg, #FFE4E1 0%, #B2F7EF 50%, #FFB6C1 100%);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  overflow: visible; /* 버튼이 헤더 바깥으로 나가도록 */
+  overflow: visible;
   display: flex;
   flex-direction: column;
   z-index: 1; /* 좌측 갤러리 위에 표시 */
@@ -22,9 +22,7 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
   z-index: 100;
-  overflow: visible;
 }
 
 .brand-logo {

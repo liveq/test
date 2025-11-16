@@ -199,8 +199,29 @@ function App() {
             e.target.style.display = 'none'
           }}
         />
+      </header>
 
-        {/* 플로팅 버튼 그룹 */}
+        <SettingsMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          prizes={prizes}
+          setPrizes={setPrizes}
+          slotCount={slotCount}
+          setSlotCount={setSlotCount}
+          slotConfig={slotConfig}
+          setSlotConfig={setSlotConfig}
+        />
+
+        <Roulette
+          prizes={prizes}
+          slotCount={slotCount}
+          slotConfig={slotConfig}
+          onSpin={handleSpin}
+          onSpinEnd={handleSpinEnd}
+          isSpinning={isSpinning}
+        />
+
+        {/* 플로팅 버튼 그룹 - 메인 영역 우측 하단 */}
         <div className="floating-buttons">
           {/* 설정 버튼 */}
           <button
@@ -244,27 +265,6 @@ function App() {
             </div>
           )}
         </div>
-      </header>
-
-        <SettingsMenu
-          isOpen={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-          prizes={prizes}
-          setPrizes={setPrizes}
-          slotCount={slotCount}
-          setSlotCount={setSlotCount}
-          slotConfig={slotConfig}
-          setSlotConfig={setSlotConfig}
-        />
-
-        <Roulette
-          prizes={prizes}
-          slotCount={slotCount}
-          slotConfig={slotConfig}
-          onSpin={handleSpin}
-          onSpinEnd={handleSpinEnd}
-          isSpinning={isSpinning}
-        />
       </div>
     </>
   )
