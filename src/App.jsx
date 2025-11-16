@@ -19,8 +19,9 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSpinning, setIsSpinning] = useState(false)
   const [currentAudio, setCurrentAudio] = useState(null)
-  const [isMusicPlaying, setIsMusicPlaying] = useState(true) // 자동재생
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [volume, setVolume] = useState(50) // 초기 볼륨 50%
+  const [isVolumeOpen, setIsVolumeOpen] = useState(false) // 볼륨 조절 펼침 상태
 
   const bgmAudioRef = useRef(null)
   const bgmPlaylistRef = useRef([])
@@ -55,11 +56,15 @@ function App() {
       bgmAudioRef.current.play().catch(() => {})
     })
 
-    // 자동재생 시도
-    bgmAudioRef.current.play().catch(() => {
-      console.log('자동재생이 차단되었습니다. 재생 버튼을 눌러주세요.')
-      setIsMusicPlaying(false)
-    })
+    // 1초 후 자동재생
+    setTimeout(() => {
+      bgmAudioRef.current.play().then(() => {
+        setIsMusicPlaying(true)
+      }).catch(() => {
+        console.log('자동재생이 차단되었습니다. 재생 버튼을 눌러주세요.')
+        setIsMusicPlaying(false)
+      })
+    }, 1000)
 
     spinningAudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/spinning.mp3`)
     prize1AudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/prize1.mp3`)
@@ -170,18 +175,29 @@ function App() {
             {isMusicPlaying ? '⏸️' : '▶️'}
           </button>
 
-          {/* 볼륨 조절 */}
-          <div className="volume-control">
-            <div className="volume-label">🔊 {volume}%</div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={volume}
-              onChange={(e) => setVolume(Number(e.target.value))}
-              className="volume-slider"
-            />
-          </div>
+          {/* 볼륨 버튼 */}
+          <button
+            className="floating-button volume-button"
+            onClick={() => setIsVolumeOpen(!isVolumeOpen)}
+            aria-label="볼륨 조절"
+          >
+            🔊
+          </button>
+
+          {/* 볼륨 슬라이더 (펼쳐질 때만 표시) */}
+          {isVolumeOpen && (
+            <div className="volume-control">
+              <div className="volume-label">{volume}%</div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={volume}
+                onChange={(e) => setVolume(Number(e.target.value))}
+                className="volume-slider"
+              />
+            </div>
+          )}
         </div>
       </header>
 

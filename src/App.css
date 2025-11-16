@@ -91,7 +91,23 @@
   transform: scale(1.0);
 }
 
-/* 볼륨 조절 */
+/* 볼륨 버튼 */
+.volume-button {
+  background: rgba(255, 193, 7, 0.95);
+  box-shadow: 0 4px 20px rgba(255, 193, 7, 0.5);
+}
+
+.volume-button:hover {
+  background: rgba(255, 193, 7, 1);
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(255, 193, 7, 0.7);
+}
+
+.volume-button:active {
+  transform: scale(1.0);
+}
+
+/* 볼륨 조절 슬라이더 */
 .volume-control {
   background: rgba(255, 255, 255, 0.95);
   border: 3px solid rgba(255, 105, 180, 0.8);
@@ -102,6 +118,18 @@
   gap: 5px;
   width: 150px;
   box-shadow: 0 4px 20px rgba(255, 105, 180, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .volume-label {
@@ -182,7 +210,7 @@
   }
 
   .volume-control {
-    width: 120px;
+    width: 130px;
     padding: 8px 12px;
   }
 
