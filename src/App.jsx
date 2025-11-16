@@ -89,26 +89,26 @@ function App() {
 
   return (
     <div className="app">
-      {/* 플로팅 설정 버튼 (.app 내부, 우측 상단) */}
-      <button
-        className="floating-settings-button"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        aria-label="설정"
-      >
-        ⚙️
-      </button>
-
       {/* 상단 코랄리에 로고 */}
       <header className="brand-header">
-          <img
-            src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
-            alt="CORALIER"
-            className="brand-logo"
-            onError={(e) => {
-              e.target.style.display = 'none'
-            }}
-          />
-        </header>
+        <img
+          src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
+          alt="CORALIER"
+          className="brand-logo"
+          onError={(e) => {
+            e.target.style.display = 'none'
+          }}
+        />
+
+        {/* 플로팅 설정 버튼 (헤더 내부) */}
+        <button
+          className="floating-settings-button"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="설정"
+        >
+          ⚙️
+        </button>
+      </header>
 
         <SettingsMenu
           isOpen={isMenuOpen}
