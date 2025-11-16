@@ -73,29 +73,34 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
     const slotAngle = 360 / slotCount
     const slotIndex = winningPrize.slotIndex
 
-    // 해당 칸의 중앙 각도
-    // SVG는 -90도 offset이 있으므로 (0도 = 3시, -90도 = 12시)
-    // 칸은 -slotAngle/2 offset으로 그려지므로
-    // 칸 0의 중앙: 0도, 칸 1의 중앙: 36도, ...
+    // 역발상: 화면(12시)에 당첨 슬롯이 오도록 회전
+    // 슬롯의 실제 SVG 중앙 각도는 slotIndex * slotAngle
+    // 12시 방향을 0도로 보면, 슬롯을 12시로 이동시키려면:
+    // (360 - 슬롯중앙각도)만큼 회전
     const targetAngle = slotIndex * slotAngle
 
-    console.log('🎯 목표 각도:', targetAngle.toFixed(1), '도 (칸', slotIndex + 1, '의 중앙)')
+    console.log('🎯 당첨 슬롯 중앙 각도:', targetAngle.toFixed(1), '도 (칸', slotIndex + 1, ')')
 
-    // 여러 바퀴 회전 + 목표 각도 계산
-    // 화살표는 12시에 고정, slot 중앙을 12시로 이동시키기
-    const spins = Math.floor(5 + Math.random() * 4) // 5, 6, 7, 8바퀴 (정수만)
-    const totalRotation = 360 * spins + (360 - targetAngle)
+    // 여러 바퀴 회전 (5-8바퀴 랜덤)
+    const spins = Math.floor(5 + Math.random() * 4)
 
-    console.log('🔄 회전 각도:', totalRotation.toFixed(1), '도')
+    // 현재 회전 상태에서 당첨 슬롯을 12시로 이동
+    const currentRotation = rotationRef.current % 360
+    // 슬롯을 12시(0도)로 이동: 360 - targetAngle 만큼 회전
+    // 현재 각도를 고려하여 정확한 목표 각도 계산
+    const targetFinalAngle = (360 - targetAngle) % 360
+    const rotationNeeded = (targetFinalAngle - currentRotation + 360) % 360
+    const totalRotation = 360 * spins + rotationNeeded
 
-    // 이번 회전의 최종 각도를 미리 계산 (클로저로 캡처)
-    const currentRotation = rotationRef.current || 0
-    const expectedFinalRotation = (currentRotation + totalRotation) % 360
-    console.log('📍 예상 최종 각도:', expectedFinalRotation.toFixed(1), '도')
+    console.log('🔄 총 회전:', totalRotation.toFixed(1), '도 (기본', spins, '바퀴 +', rotationNeeded.toFixed(1), '도)')
+
+    // 최종 각도 (검증용)
+    const expectedFinalRotation = (rotationRef.current + totalRotation) % 360
+    console.log('📍 예상 최종 각도:', expectedFinalRotation.toFixed(1), '도 (목표:', targetFinalAngle.toFixed(1), '도)')
 
     setRotation(prev => {
       const newRotation = prev + totalRotation
-      rotationRef.current = newRotation // ref에 최신 값 저장
+      rotationRef.current = newRotation
       console.log('🎡 누적 회전:', newRotation.toFixed(1), '도 (이전:', prev.toFixed(1), '도)')
       return newRotation
     })
