@@ -47,6 +47,8 @@
   top: 20px;
   right: 20px;
   z-index: 1000;
+  width: auto;
+  display: inline-block;
   background: rgba(255, 105, 180, 0.9); /* 코랄리에 핑크 */
   border: 2px solid rgba(255, 255, 255, 0.5);
   border-radius: 12px;
