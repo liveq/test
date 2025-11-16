@@ -4,13 +4,18 @@ import SettingsMenu from './components/SettingsMenu'
 import './App.css'
 
 const DEFAULT_PRIZES = [
-  { id: 1, name: '치약,칫솔,구강스프레이(2+1)세트', percentage: 10, color: '#FF69B4' }, // 연핑크
-  { id: 2, name: '구강스프레이 단품', percentage: 40, color: '#7FFFD4' }, // 민트
-  { id: 3, name: '마우스워시 단품', percentage: 50, color: '#FFB6C1' } // 연한 핑크
+  { id: 1, name: '치약,칫솔,구강스프레이(2+1)세트', color: '#FF69B4' }, // 1등
+  { id: 2, name: '구강스프레이 단품', color: '#7FFFD4' }, // 2등
+  { id: 3, name: '마우스워시 단품', color: '#FFB6C1' } // 3등
 ]
+
+const DEFAULT_SLOT_COUNT = 10
+const DEFAULT_SLOT_CONFIG = [1, 2, 2, 2, 2, 3, 3, 3, 3, 3] // 각 칸에 할당된 등수 (1등 1칸, 2등 4칸, 3등 5칸)
 
 function App() {
   const [prizes, setPrizes] = useState(DEFAULT_PRIZES)
+  const [slotCount, setSlotCount] = useState(DEFAULT_SLOT_COUNT)
+  const [slotConfig, setSlotConfig] = useState(DEFAULT_SLOT_CONFIG)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSpinning, setIsSpinning] = useState(false)
   const [currentAudio, setCurrentAudio] = useState(null)
@@ -158,10 +163,16 @@ function App() {
           onClose={() => setIsMenuOpen(false)}
           prizes={prizes}
           setPrizes={setPrizes}
+          slotCount={slotCount}
+          setSlotCount={setSlotCount}
+          slotConfig={slotConfig}
+          setSlotConfig={setSlotConfig}
         />
 
         <Roulette
           prizes={prizes}
+          slotCount={slotCount}
+          slotConfig={slotConfig}
           onSpin={handleSpin}
           onSpinEnd={handleSpinEnd}
           isSpinning={isSpinning}

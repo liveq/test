@@ -1,39 +1,35 @@
 import { useState, useRef, useEffect } from 'react'
 import './Roulette.css'
 
-function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
+function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning }) {
   const [rotation, setRotation] = useState(0)
   const [winner, setWinner] = useState(null)
   const wheelRef = useRef(null)
   const spinTimeoutRef = useRef(null)
   const currentWinnerRef = useRef(null)
 
-  // 10칸 룰렛 구조: prizes 배열 순서대로 percentage에 따라 칸 할당
+  // slotConfig 기반 룰렛 칸 생성
   const getWheelSlots = () => {
-    const slots = []
-    let currentSlot = 0
-
-    // prizes 배열 순서대로, percentage에 따라 slot 0부터 할당
-    prizes.forEach((prize) => {
-      const slotsForThisPrize = Math.round(prize.percentage / 10) // 10% = 1칸
-
-      for (let i = 0; i < slotsForThisPrize; i++) {
-        slots.push({ slotIndex: currentSlot, prize: prize })
-        currentSlot++
+    return slotConfig.map((rank, index) => {
+      const prize = prizes.find(p => p.id === rank)
+      return {
+        slotIndex: index,
+        rank: rank,
+        prize: prize || prizes[0] // 혹시 없으면 첫 번째 상품
       }
     })
-
-    return slots
   }
 
+  // 랜덤 칸 선택
   const getRandomPrize = () => {
-    const slots = getWheelSlots()
-    const randomSlotIndex = Math.floor(Math.random() * 10)
-    const selectedSlot = slots.find(s => s.slotIndex === randomSlotIndex)
+    const randomSlotIndex = Math.floor(Math.random() * slotCount)
+    const rank = slotConfig[randomSlotIndex]
+    const prize = prizes.find(p => p.id === rank)
 
-    console.log('🎲 랜덤 칸 선택:', randomSlotIndex, '/', 9)
+    console.log('🎲 랜덤 칸 선택:', randomSlotIndex + 1, '/', slotCount)
+    console.log('🏆 당첨 등수:', rank + '등')
 
-    return { ...selectedSlot.prize, slotIndex: randomSlotIndex }
+    return { ...prize, slotIndex: randomSlotIndex }
   }
 
   const handleSpinClick = () => {
@@ -54,23 +50,22 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
 
     const winningPrize = getRandomPrize()
     currentWinnerRef.current = winningPrize
-    console.log('🎰 당첨 상품:', winningPrize)
-    console.log('📍 당첨 칸:', winningPrize.slotIndex, '/ 9')
-    console.log('📊 현재 prizes 순서:', prizes)
+    console.log('🎰 당첨 상품:', winningPrize.name)
+    console.log('📍 당첨 칸:', winningPrize.slotIndex + 1)
     setWinner(null)
     onSpin()
 
-    // 10칸 룰렛 각도 계산
-    const slotAngle = 36 // 360도 / 10칸
+    // 동적 칸 수에 따른 각도 계산
+    const slotAngle = 360 / slotCount
     const slotIndex = winningPrize.slotIndex
 
     // 해당 칸의 중앙 각도
     const targetAngle = slotIndex * slotAngle + slotAngle / 2
 
-    console.log('🎯 목표 각도:', targetAngle, '도 (칸', slotIndex, '의 중앙)')
+    console.log('🎯 목표 각도:', targetAngle.toFixed(1), '도 (칸', slotIndex + 1, '의 중앙)')
 
     // 여러 바퀴 회전 + 목표 각도 계산
-    // 화살표는 12시(-90도)에 고정, slot 중앙을 12시로 이동시키기
+    // 화살표는 12시에 고정, slot 중앙을 12시로 이동시키기
     const spins = 5 + Math.random() * 3 // 5-8바퀴
     const totalRotation = 360 * spins + (360 - targetAngle)
 
@@ -106,7 +101,7 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
         >
           <svg width="100%" height="100%" viewBox="0 0 400 400">
             {getWheelSlots().map((slot) => {
-              const slotAngle = 36 // 각 칸은 36도
+              const slotAngle = 360 / slotCount
               const startAngle = slot.slotIndex * slotAngle
               const endAngle = startAngle + slotAngle
 
@@ -119,23 +114,29 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
               const x2 = 200 + 180 * Math.cos(endRad)
               const y2 = 200 + 180 * Math.sin(endRad)
 
+              // 호가 180도 이상인지 확인
+              const largeArcFlag = slotAngle > 180 ? 1 : 0
+
               const pathData = [
                 `M 200 200`,
                 `L ${x1} ${y1}`,
-                `A 180 180 0 0 1 ${x2} ${y2}`,
+                `A 180 180 0 ${largeArcFlag} 1 ${x2} ${y2}`,
                 `Z`
               ].join(' ')
 
-              // 텍스트는 각 상품의 대표 칸(중간 칸)에만 표시
+              // 텍스트는 각 등수의 대표 칸(중간 칸)에만 표시
               const allSlots = getWheelSlots()
-              const prizeSlots = allSlots.filter(s => s.prize.id === slot.prize.id)
-              const middleSlotIndex = prizeSlots[Math.floor(prizeSlots.length / 2)].slotIndex
-              const showText = slot.slotIndex === middleSlotIndex
+              const sameRankSlots = allSlots.filter(s => s.rank === slot.rank)
+              const middleIndex = Math.floor(sameRankSlots.length / 2)
+              const isMiddleSlot = sameRankSlots[middleIndex].slotIndex === slot.slotIndex
 
               const midAngle = (startAngle + endAngle) / 2
               const midRad = (midAngle - 90) * Math.PI / 180
               const textX = 200 + 110 * Math.cos(midRad)
               const textY = 200 + 110 * Math.sin(midRad)
+
+              // 텍스트 크기를 칸 수에 따라 조정
+              const fontSize = Math.max(8, Math.min(18, 360 / slotCount))
 
               return (
                 <g key={`slot-${slot.slotIndex}`}>
@@ -143,20 +144,20 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                     d={pathData}
                     fill={slot.prize.color}
                     stroke="#fff"
-                    strokeWidth="3"
+                    strokeWidth="2"
                   />
-                  {showText && (
+                  {isMiddleSlot && slotCount <= 50 && (
                     <text
                       x={textX}
                       y={textY}
                       textAnchor="middle"
                       dominantBaseline="middle"
                       fill="#fff"
-                      fontSize="18"
+                      fontSize={fontSize}
                       fontWeight="bold"
                       style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
                     >
-                      {slot.prize.name}
+                      {slot.rank}등
                     </text>
                   )}
                 </g>
@@ -212,7 +213,7 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
             <div className="winner-name">
               {winner.name}
             </div>
-            
+
             <button className="close-modal-button" onClick={handleCloseModal}>
               닫기
             </button>
