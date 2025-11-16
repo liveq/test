@@ -226,6 +226,11 @@
     font-size: 28px;
   }
 
+  .prize-image-container {
+    max-width: 250px;
+    height: 250px;
+  }
+
   .prize-image {
     max-width: 280px;
   }
