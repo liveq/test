@@ -7,7 +7,7 @@
   position: relative;
   background: linear-gradient(135deg, #FFE4E1 0%, #B2F7EF 50%, #FFB6C1 100%);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+  overflow: visible; /* 버튼이 헤더 바깥으로 나가도록 */
   display: flex;
   flex-direction: column;
 }
@@ -32,13 +32,13 @@
   object-fit: contain;
 }
 
-/* 플로팅 설정 버튼 (헤더 내부) */
+/* 플로팅 설정 버튼 (헤더 바깥) */
 .floating-settings-button {
   position: absolute;
   top: 50%;
-  right: -25px; /* 헤더 우측 바깥으로 배치 */
+  right: -70px; /* 헤더 완전히 바깥으로 배치 */
   transform: translateY(-50%);
-  z-index: 200;
+  z-index: 10000; /* 배경에 가려지지 않도록 최상위 */
   width: 50px;
   height: 50px;
   background: rgba(255, 105, 180, 0.95);
@@ -81,7 +81,7 @@
   }
 
   .floating-settings-button {
-    right: -22px; /* 모바일에서도 헤더 바깥으로 */
+    right: -60px; /* 모바일에서도 헤더 완전히 바깥으로 */
     width: 45px;
     height: 45px;
     font-size: 20px;
