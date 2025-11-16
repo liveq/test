@@ -14,32 +14,48 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSpinning, setIsSpinning] = useState(false)
   const [currentAudio, setCurrentAudio] = useState(null)
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false)
 
-  const waitingAudioRef = useRef(null)
+  const bgmAudioRef = useRef(null)
+  const bgmPlaylistRef = useRef([])
+  const currentBgmIndexRef = useRef(0)
   const spinningAudioRef = useRef(null)
   const prize1AudioRef = useRef(null)
   const prize2AudioRef = useRef(null)
   const prize3AudioRef = useRef(null)
 
   useEffect(() => {
-    // 대기 음악 자동 재생 (루프)
-    waitingAudioRef.current = new Audio('/audio/waiting.mp3')
-    waitingAudioRef.current.loop = true
-    waitingAudioRef.current.volume = 0.5
+    // BGM 파일 6개 랜덤 순서로 재생목록 생성
+    const bgmFiles = [
+      `${import.meta.env.BASE_URL}audio/bgm1.mp3`,
+      `${import.meta.env.BASE_URL}audio/bgm2.mp3`,
+      `${import.meta.env.BASE_URL}audio/bgm3.mp3`,
+      `${import.meta.env.BASE_URL}audio/bgm4.mp3`,
+      `${import.meta.env.BASE_URL}audio/bgm5.mp3`,
+      `${import.meta.env.BASE_URL}audio/bgm6.mp3`
+    ]
 
-    // 음악 파일이 있으면 재생 시도
-    waitingAudioRef.current.play().catch(() => {
-      // 자동재생 차단된 경우 무시
-      console.log('대기 음악 자동재생이 차단되었습니다.')
+    // 랜덤 셔플
+    bgmPlaylistRef.current = bgmFiles.sort(() => Math.random() - 0.5)
+
+    // 첫 번째 BGM 설정
+    bgmAudioRef.current = new Audio(bgmPlaylistRef.current[0])
+    bgmAudioRef.current.volume = 0.5
+
+    // 곡이 끝나면 다음 곡 재생 (연속재생)
+    bgmAudioRef.current.addEventListener('ended', () => {
+      currentBgmIndexRef.current = (currentBgmIndexRef.current + 1) % bgmPlaylistRef.current.length
+      bgmAudioRef.current.src = bgmPlaylistRef.current[currentBgmIndexRef.current]
+      bgmAudioRef.current.play().catch(() => {})
     })
 
-    spinningAudioRef.current = new Audio('/audio/spinning.mp3')
-    prize1AudioRef.current = new Audio('/audio/prize1.mp3')
-    prize2AudioRef.current = new Audio('/audio/prize2.mp3')
-    prize3AudioRef.current = new Audio('/audio/prize3.mp3')
+    spinningAudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/spinning.mp3`)
+    prize1AudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/prize1.mp3`)
+    prize2AudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/prize2.mp3`)
+    prize3AudioRef.current = new Audio(`${import.meta.env.BASE_URL}audio/prize3.mp3`)
 
     return () => {
-      waitingAudioRef.current?.pause()
+      bgmAudioRef.current?.pause()
     }
   }, [])
 
@@ -56,13 +72,25 @@ function App() {
     setCurrentAudio(audioRef.current)
   }
 
+  const toggleMusic = () => {
+    if (isMusicPlaying) {
+      bgmAudioRef.current?.pause()
+      setIsMusicPlaying(false)
+    } else {
+      bgmAudioRef.current?.play().catch(() => {
+        console.log('BGM 재생 실패')
+      })
+      setIsMusicPlaying(true)
+    }
+  }
+
   const handleSpin = () => {
     if (isSpinning) return
 
     setIsSpinning(true)
 
-    // 대기 음악 중지, 회전 음악 재생
-    waitingAudioRef.current?.pause()
+    // BGM 중지, 회전 음악 재생
+    bgmAudioRef.current?.pause()
     playAudio(spinningAudioRef)
   }
 
@@ -81,9 +109,11 @@ function App() {
       playAudio(prize3AudioRef)
     }
 
-    // 3초 후 대기 음악 재개
+    // 3초 후 BGM 재개 (재생 중이었다면)
     setTimeout(() => {
-      waitingAudioRef.current?.play().catch(() => {})
+      if (isMusicPlaying) {
+        bgmAudioRef.current?.play().catch(() => {})
+      }
     }, 3000)
   }
 
@@ -100,14 +130,26 @@ function App() {
           }}
         />
 
-        {/* 플로팅 설정 버튼 (헤더 내부) */}
-        <button
-          className="floating-settings-button"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="설정"
-        >
-          ⚙️
-        </button>
+        {/* 플로팅 버튼 그룹 */}
+        <div className="floating-buttons">
+          {/* 설정 버튼 */}
+          <button
+            className="floating-button settings-button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="설정"
+          >
+            ⚙️
+          </button>
+
+          {/* 음악 재생/정지 버튼 */}
+          <button
+            className="floating-button music-button"
+            onClick={toggleMusic}
+            aria-label={isMusicPlaying ? '음악 정지' : '음악 재생'}
+          >
+            {isMusicPlaying ? '⏸️' : '▶️'}
+          </button>
+        </div>
       </header>
 
         <SettingsMenu

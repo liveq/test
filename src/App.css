@@ -32,36 +32,63 @@
   object-fit: contain;
 }
 
-/* 플로팅 설정 버튼 (헤더 바깥) */
-.floating-settings-button {
+/* 플로팅 버튼 그룹 (헤더 바깥) */
+.floating-buttons {
   position: absolute;
   top: 50%;
   right: -70px; /* 헤더 완전히 바깥으로 배치 */
   transform: translateY(-50%);
-  z-index: 10000; /* 배경에 가려지지 않도록 최상위 */
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 플로팅 버튼 공통 스타일 */
+.floating-button {
   width: 50px;
   height: 50px;
-  background: rgba(255, 105, 180, 0.95);
   border: 3px solid rgba(255, 255, 255, 0.8);
   border-radius: 50%;
   font-size: 24px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.floating-settings-button:hover {
+/* 설정 버튼 */
+.settings-button {
+  background: rgba(255, 105, 180, 0.95);
+  box-shadow: 0 4px 20px rgba(255, 105, 180, 0.5);
+}
+
+.settings-button:hover {
   background: rgba(255, 105, 180, 1);
-  transform: translateY(-50%) scale(1.1) rotate(90deg);
+  transform: scale(1.1) rotate(90deg);
   box-shadow: 0 6px 25px rgba(255, 105, 180, 0.7);
 }
 
-.floating-settings-button:active {
-  transform: translateY(-50%) scale(1.0) rotate(90deg);
+.settings-button:active {
+  transform: scale(1.0) rotate(90deg);
+}
+
+/* 음악 버튼 */
+.music-button {
+  background: rgba(127, 255, 212, 0.95);
+  box-shadow: 0 4px 20px rgba(127, 255, 212, 0.5);
+}
+
+.music-button:hover {
+  background: rgba(127, 255, 212, 1);
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(127, 255, 212, 0.7);
+}
+
+.music-button:active {
+  transform: scale(1.0);
 }
 
 /* 모바일 최적화 */
@@ -80,8 +107,12 @@
     max-width: 200px;
   }
 
-  .floating-settings-button {
+  .floating-buttons {
     right: -60px; /* 모바일에서도 헤더 완전히 바깥으로 */
+    gap: 10px;
+  }
+
+  .floating-button {
     width: 45px;
     height: 45px;
     font-size: 20px;
