@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import './Roulette.css'
 
 function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning }) {
-  const [rotation, setRotation] = useState(0)
+  // 룰렛을 18도 회전시켜서 화살표가 칸의 중앙을 명확히 가리키도록
+  const [rotation, setRotation] = useState(18)
   const [winner, setWinner] = useState(null)
   const wheelRef = useRef(null)
   const spinTimeoutRef = useRef(null)
