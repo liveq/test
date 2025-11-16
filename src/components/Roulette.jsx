@@ -64,14 +64,15 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
     const slotAngle = 36 // 360도 / 10칸
     const slotIndex = winningPrize.slotIndex
 
-    // 해당 칸의 중앙 각도 (SVG는 -90도 보정되어 있음)
+    // 해당 칸의 중앙 각도
     const targetAngle = slotIndex * slotAngle + slotAngle / 2
 
     console.log('🎯 목표 각도:', targetAngle, '도 (칸', slotIndex, '의 중앙)')
 
-    // 여러 바퀴 회전 + 목표 각도 (SVG -90도 보정 반영)
+    // 여러 바퀴 회전 + 목표 각도 계산
+    // 화살표는 12시(-90도)에 고정, slot 중앙을 12시로 이동시키기
     const spins = 5 + Math.random() * 3 // 5-8바퀴
-    const totalRotation = 360 * spins + (360 - targetAngle + 90)
+    const totalRotation = 360 * spins + (360 - targetAngle)
 
     setRotation(prev => prev + totalRotation)
 
