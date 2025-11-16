@@ -34,8 +34,8 @@ body {
   grid-template-columns: 1fr 1fr; /* 2열 균등 */
   grid-template-rows: 1fr 1.5fr 1fr; /* 상: 작음, 중: 큼, 하: 작음 */
   gap: 12px;
-  /* padding으로 실제 그리드를 70% 크기로 축소 (상하 15%, 좌우 15%) */
-  padding: 15vh 15%;
+  /* padding 줄여서 실제 그리드 폭 2배 증가 (15% → 5%) */
+  padding: 10vh 5%;
   align-content: center; /* 세로 중앙 */
   z-index: 0;
 }
@@ -85,8 +85,8 @@ body {
   grid-template-columns: 1fr 1fr; /* 2열 균등 */
   grid-template-rows: 1fr 1.5fr 1fr; /* 상: 작음, 중: 큼, 하: 작음 */
   gap: 12px;
-  /* padding으로 실제 그리드를 70% 크기로 축소 (상하 15%, 좌우 15%) */
-  padding: 15vh 15%;
+  /* padding 줄여서 실제 그리드 폭 2배 증가 (15% → 5%) */
+  padding: 10vh 5%;
   align-content: center; /* 세로 중앙 */
   z-index: 0;
 }
