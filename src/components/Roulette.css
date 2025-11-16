@@ -96,14 +96,14 @@
 /* 결과 오버레이 */
 .result-overlay {
   position: fixed;
-  top: 0;
+  top: 140px; /* 헤더 높이만큼 아래에서 시작 */
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* 헤더 아래 영역의 정중앙 */
   z-index: 1000;
   animation: fadeIn 0.3s ease;
 }
