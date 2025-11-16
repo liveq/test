@@ -1910,10 +1910,322 @@ const canvas = document.createElement('canvas');
 URL.revokeObjectURL(img.src);
 ```
 
+
+
+## 11. Footer 추가 시 주의사항 (PDF #03 사례 연구)
+
+### 11.1 문제 1: 잘못된 Footer 삽입 위치
+
+#### 문제 상황
+PDF 서비스(#03)에 footer를 추가할 때 **Line 1063**에 삽입했으나, 이는 `<script>` 태그 내부였습니다. 이로 인해:
+- HTML 구조가 완전히 깨짐
+- 브라우저가 `<head>`를 `<body>` 내부에 렌더링
+- Footer가 화면에 전혀 표시되지 않음
+- Developer tools에서 DOM 구조 손상 확인
+
+#### 원인 분석
+```html
+Line 746: <div class="container">
+Line 870:     </div>  <!-- split tab content -->
+Line 871:   </div>    <!-- tab content wrapper -->
+Line 872: </div>      <!-- CONTAINER CLOSES (올바른 위치) -->
+Line 873:
+Line 874: <script>    <!-- JavaScript starts -->
+...
+Line 1063: <!-- 여기에 footer를 추가함 (잘못된 위치!) -->
+```
+
+복잡한 중첩 div 구조에서:
+1. Container가 어디서 닫히는지 제대로 파악하지 못함
+2. `<script>` 태그 위치를 먼저 확인하지 않음
+3. JavaScript 코드 내부에 HTML을 삽입하여 파싱 오류 발생
+
+#### 해결 방법
+1. **`<script>` 태그를 먼저 찾기**: JavaScript 시작점을 기준으로 역산
+2. **Container 닫힘 태그 확인**: `</div>` 주석을 따라 구조 파악
+3. **올바른 삽입 위치**: Line 871과 872 사이 (container 내부, 닫기 전)
+
+```python
+# add_footer_complete.py
+def add_footer():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    footer_html = '''
+        <!-- Footer -->
+        <footer>
+            ...
+        </footer>
+'''
+
+    # Line 871과 872 사이에 삽입 (container 내부)
+    lines.insert(871, footer_html)
+
+    with open('index.html', 'w', encoding='utf-8') as f:
+        f.writelines(lines)
+```
+
+#### 디버깅 과정
+1. `git reset --hard 49897d2` - 잘못된 커밋 제거
+2. HTML 구조를 라인별로 매핑
+3. 올바른 삽입 지점 재확인
+4. 로컬 서버(port 5005)에서 테스트 후 커밋
+
+### 11.2 문제 2: CSS 클래스 이름 충돌 (Tooltip)
+
+#### 문제 상황
+"더 많은 도구" 버튼에 마우스를 올리면:
+- Tooltip이 작은 원형 아이콘으로 표시됨
+- 위치가 버튼 중심에서 어긋남
+- "툴팁이 찔끔 뜬다"는 사용자 피드백
+
+#### 원인 분석
+`.tooltip` 클래스가 **두 번 정의**되어 충돌:
+
+```css
+/* Line 139 - 아이콘 버튼 툴팁 (올바른 용도) */
+.tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+/* Line 398 - 정보 아이콘 툴팁 (충돌 원인!) */
+.tooltip {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--text-light);
+    color: var(--primary-white);
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    position: relative;
+    margin-left: 4px;
+}
+```
+
+JavaScript가 "더 많은 도구" 버튼용 tooltip을 생성하면:
+```javascript
+const tooltip = document.createElement('div');
+tooltip.className = 'tooltip';  // Line 398의 CSS가 적용됨!
+```
+
+두 번째 정의가 첫 번째를 덮어씌워 버튼 tooltip이 원형 아이콘처럼 보임.
+
+#### 해결 방법
+두 번째 `.tooltip`을 `.info-tooltip`으로 이름 변경:
+
+```python
+# fix_tooltip_conflict.py
+def fix_tooltip():
+    with open('index.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # 두 번째 .tooltip 정의를 .info-tooltip으로 변경
+    old_css = '''        .tooltip {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            ...
+        }
+
+        .tooltip:hover::after {'''
+
+    new_css = '''        .info-tooltip {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            ...
+        }
+
+        .info-tooltip:hover::after {'''
+
+    content = content.replace(old_css, new_css)
+
+    with open('index.html', 'w', encoding='utf-8') as f:
+        f.write(content)
+```
+
+#### 예방 체크리스트
+- [ ] CSS 추가 전 동일 클래스명 검색 (`grep -n "\.tooltip {"`)
+- [ ] 클래스명에 용도 명시 (`.icon-tooltip`, `.info-tooltip` 등)
+- [ ] 로컬 테스트에서 모든 인터랙션 확인
+- [ ] Developer tools에서 적용된 CSS 규칙 확인
+
+### 11.3 Footer 추가 완전 체크리스트
+
+#### 1단계: HTML 구조 분석
+```bash
+# Container 시작/끝 찾기
+grep -n "<div class=\"container\">" index.html
+grep -n "</div>" index.html | tail -20
+
+# Script 태그 위치 확인
+grep -n "<script>" index.html
+```
+
+#### 2단계: 삽입 위치 결정
+- Container 닫기 직전 (JavaScript 시작 전)
+- 기존 콘텐츠와 겹치지 않는 곳
+- 주석으로 구조 확인
+
+#### 3단계: CSS 클래스 충돌 확인
+```bash
+# 중복 클래스명 검색
+grep -n "\.footer {" index.html
+grep -n "\.tooltip {" index.html
+```
+
+#### 4단계: 파일 수정
+```python
+# Python 스크립트 사용 권장
+# - Edit 도구보다 안정적
+# - 라인 번호 기반 정확한 삽입
+# - 되돌리기 용이 (git reset)
+```
+
+#### 5단계: 로컬 테스트
+```bash
+cd /path/to/service
+npx http-server -p 5005
+
+# 확인 사항:
+# - Footer 표시 여부
+# - Tooltip 동작
+# - Privacy Modal 열기/닫기
+# - Dark mode 지원
+# - 반응형 레이아웃
+```
+
+#### 6단계: 커밋 & 푸시
+```bash
+git add index.html
+git commit -m "Add footer section with privacy modal
+
+- Footer HTML at correct location (inside container)
+- Footer CSS with dark mode support
+- Privacy Modal with baal.co.kr gradient styling
+- JavaScript functions for modal interaction
+- Fixed tooltip CSS class name collision
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+git push origin main
+```
+
+### 11.4 서비스별 Footer 위치 참고
+
+| 서비스 | Container 닫기 | Script 시작 | Footer 삽입 위치 |
+|--------|---------------|-------------|-----------------|
+| #03 PDF | Line 872 | Line 874 | Line 871-872 사이 |
+| #04-#20 | 각기 다름 | 각기 다름 | 기존 footer 교체 |
+
+**중요**: 각 서비스마다 구조가 다르므로 반드시 개별 분석 필요!
+
 ---
 
 **이 가이드를 따르면 버그 없이 일관된 품질의 서비스를 빠르게 개발할 수 있습니다.**
 
-**최종 업데이트:** 2025-10-27
+**최종 업데이트:** 2025-10-28
 **작성자:** BAAL Team
 **기여:** Claude Code
+
+### 11.5 Split 서비스 케이스: 기존 Footer 업데이트 시 주의사항
+
+PDF 서비스는 **footer가 없어서 새로 추가**했다면, Split 서비스는 **구버전 footer가 존재하여 업데이트**하는 케이스였습니다.
+
+#### 상황 분석
+- **기존 상태**: 구버전 footer, Privacy Modal, Terms Modal 존재
+- **목표**: 새 이메일, Privacy Modal만 남기고 Terms 제거, baal.co.kr 스타일 적용
+
+#### 문제 3: 구버전 Modal CSS 충돌
+
+**문제 상황**
+- Privacy Modal 클릭 시 모달창이 화면 **좌측 상단에 정렬**됨
+- 새로운 `.privacy-modal` CSS가 적용되지 않음
+
+**원인 분석**
+- 기존 `.modal`, `.modal-content` CSS가 Line 600-680에 남아있어 충돌 발생
+- HTML은 `class="privacy-modal"`을 사용하지만 구버전 CSS가 간섭
+- `.privacy-modal.show`의 `justify-content: center`가 작동 안함
+
+**해결 방법**
+구버전 modal CSS 블록 전체 제거 (`fix_modal_css_simple.py`로 처리)
+
+#### 문제 4: JavaScript 함수 방식 불일치
+
+**문제 상황**
+CSS는 `.show` 클래스를 사용하는데, JavaScript는 구버전 방식 사용:
+```javascript
+// 구버전 (문제!)
+modal.style.display = 'flex';  // inline style, CSS 규칙 무시
+```
+
+**해결 방법**
+CSS와 일치하도록 `classList` 방식으로 변경:
+```javascript
+// 새 방식
+function openPrivacyModal() {
+    document.getElementById('privacyModal').classList.add('show');
+}
+```
+
+#### 문제 5: 불필요한 Terms Modal 잔재
+
+**해결 방법**
+1. Terms Modal HTML 제거 (regex로 블록 삭제)
+2. Terms 관련 JavaScript 함수 제거
+3. ESC key handler에서 Terms 로직 제거
+
+### 11.6 Footer 업데이트 전략 비교
+
+| 상황 | PDF (신규 추가) | Split (업데이트) |
+|------|-----------------|------------------|
+| **초기 상태** | Footer 없음 | 구버전 Footer 존재 |
+| **주요 이슈** | HTML 위치 오류<br>CSS 클래스명 중복 | 구버전 CSS 충돌<br>JS 방식 불일치<br>불필요한 코드 잔재 |
+| **해결 순서** | 1. 올바른 위치 찾기<br>2. HTML/CSS/JS 추가<br>3. 클래스명 변경 | 1. HTML 교체<br>2. 구버전 CSS 제거<br>3. JS 함수 업데이트<br>4. Terms 제거 |
+
+### 11.7 디버깅 팁
+
+#### 모달이 중앙에 안 뜨는 경우
+
+**개발자 도구에서 확인**:
+```javascript
+const modal = document.getElementById('privacyModal');
+console.log(modal.className);  // "privacy-modal show" 확인
+console.log(window.getComputedStyle(modal).justifyContent);  // "center" 확인
+```
+
+**CSS 우선순위 확인**:
+- 개발자 도구 > Elements > Computed
+- `.privacy-modal.show` 규칙이 적용되는지 확인
+- 다른 CSS 규칙이 override하는지 확인
+
+**JavaScript 방식 확인**:
+```javascript
+// 잘못: inline style 사용
+modal.style.display = 'flex';
+
+// 올바름: classList 사용
+modal.classList.add('show');
+```
+
+---
+
