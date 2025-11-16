@@ -23,6 +23,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 100;
+  overflow: visible;
 }
 
 .brand-logo {
@@ -35,7 +36,7 @@
 .floating-settings-button {
   position: absolute;
   top: 50%;
-  right: 20px;
+  right: -25px; /* 헤더 우측 바깥으로 배치 */
   transform: translateY(-50%);
   z-index: 200;
   width: 50px;
@@ -80,7 +81,7 @@
   }
 
   .floating-settings-button {
-    right: 15px;
+    right: -22px; /* 모바일에서도 헤더 바깥으로 */
     width: 45px;
     height: 45px;
     font-size: 20px;
