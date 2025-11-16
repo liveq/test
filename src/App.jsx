@@ -101,19 +101,7 @@ function App() {
         />
       </header>
 
-      <button
-        className="menu-button"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        aria-label="설정 메뉴"
-      >
-        <div className="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </button>
-
-      {/* 새 플로팅 설정 버튼 */}
+      {/* 플로팅 설정 버튼 */}
       <button
         className="floating-settings-button"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
