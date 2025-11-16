@@ -192,7 +192,7 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
       {/* 결과 표시 */}
       {winner && (
         <div className="result-overlay" onClick={handleCloseModal}>
-          <div className="result-card" onClick={(e) => e.stopPropagation()}>
+          <div className="result-card">
             <h2>🎉 축하합니다! 🎉</h2>
 
             {/* 당첨 상품 이미지 */}
