@@ -5,6 +5,8 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
   const [rotation, setRotation] = useState(0)
   const [winner, setWinner] = useState(null)
   const wheelRef = useRef(null)
+  const spinTimeoutRef = useRef(null)
+  const currentWinnerRef = useRef(null)
 
   const getRandomPrize = () => {
     const random = Math.random() * 100
@@ -21,9 +23,23 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
   }
 
   const handleSpinClick = () => {
-    if (isSpinning) return
+    if (isSpinning) {
+      // 회전 중이면 즉시 정지
+      if (spinTimeoutRef.current) {
+        clearTimeout(spinTimeoutRef.current)
+        spinTimeoutRef.current = null
+      }
+
+      // 즉시 당첨 결과 표시
+      if (currentWinnerRef.current) {
+        setWinner(currentWinnerRef.current)
+        onSpinEnd(currentWinnerRef.current)
+      }
+      return
+    }
 
     const winningPrize = getRandomPrize()
+    currentWinnerRef.current = winningPrize
     setWinner(null)
     onSpin()
 
@@ -47,9 +63,11 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
     setRotation(prev => prev + totalRotation)
 
     // 애니메이션 완료 후
-    setTimeout(() => {
+    spinTimeoutRef.current = setTimeout(() => {
       setWinner(winningPrize)
       onSpinEnd(winningPrize)
+      spinTimeoutRef.current = null
+      currentWinnerRef.current = null
     }, 5000) // 5초 회전
   }
 
@@ -175,11 +193,10 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
 
       {/* 스핀 버튼 */}
       <button
-        className={`spin-button ${isSpinning ? 'disabled' : ''}`}
+        className={`spin-button ${isSpinning ? 'spinning' : ''}`}
         onClick={handleSpinClick}
-        disabled={isSpinning}
       >
-        {isSpinning ? '회전 중...' : '룰렛 돌리기'}
+        {isSpinning ? '멈춤' : '룰렛 돌리기'}
       </button>
 
       {/* 결과 표시 */}
