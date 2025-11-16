@@ -143,9 +143,18 @@ function App() {
   }
 
   return (
-    <div className="app">
-      {/* 상단 코랄리에 로고 */}
-      <header className="brand-header">
+    <>
+      {/* 좌측 제품 갤러리 */}
+      <div className="product-gallery-left">
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D13984.jpg" alt="Coralier Product 1" />
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D13952.jpg" alt="Coralier Product 2" />
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D13961.jpg" alt="Coralier Product 3" />
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D14135.jpg" alt="Coralier Product 4" />
+      </div>
+
+      <div className="app">
+        {/* 상단 코랄리에 로고 */}
+        <header className="brand-header">
         <img
           src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
           alt="CORALIER"
@@ -220,7 +229,8 @@ function App() {
           onSpinEnd={handleSpinEnd}
           isSpinning={isSpinning}
         />
-    </div>
+      </div>
+    </>
   )
 }
 

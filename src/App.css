@@ -10,6 +10,7 @@
   overflow: visible; /* 버튼이 헤더 바깥으로 나가도록 */
   display: flex;
   flex-direction: column;
+  z-index: 1; /* 좌측 갤러리 위에 표시 */
 }
 
 /* 상단 브랜드 헤더 */
