@@ -59,8 +59,8 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
     const slotAngle = 360 / slotCount
     const slotIndex = winningPrize.slotIndex
 
-    // 해당 칸의 중앙 각도
-    const targetAngle = slotIndex * slotAngle + slotAngle / 2
+    // 해당 칸의 중앙 각도 (칸 1의 중앙이 0도가 되도록)
+    const targetAngle = slotIndex * slotAngle
 
     console.log('🎯 목표 각도:', targetAngle.toFixed(1), '도 (칸', slotIndex + 1, '의 중앙)')
 
@@ -102,7 +102,8 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
           <svg width="100%" height="100%" viewBox="0 0 400 400">
             {getWheelSlots().map((slot) => {
               const slotAngle = 360 / slotCount
-              const startAngle = slot.slotIndex * slotAngle
+              // 칸 1의 중앙이 0도(12시)가 되도록 오프셋
+              const startAngle = slot.slotIndex * slotAngle - slotAngle / 2
               const endAngle = startAngle + slotAngle
 
               // SVG path 계산
@@ -130,7 +131,8 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
               const middleIndex = Math.floor(sameRankSlots.length / 2)
               const isMiddleSlot = sameRankSlots[middleIndex].slotIndex === slot.slotIndex
 
-              const midAngle = (startAngle + endAngle) / 2
+              // 칸의 중앙 (오프셋 적용된 각도)
+              const midAngle = slot.slotIndex * slotAngle
               const midRad = (midAngle - 90) * Math.PI / 180
               const textX = 200 + 110 * Math.cos(midRad)
               const textY = 200 + 110 * Math.sin(midRad)
