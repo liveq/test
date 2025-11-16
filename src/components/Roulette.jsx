@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import './Roulette.css'
 
 function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning }) {
-  // 룰렛을 18도 회전시켜서 화살표가 칸의 중앙을 명확히 가리키도록
-  const [rotation, setRotation] = useState(18)
+  const [rotation, setRotation] = useState(0)
   const [winner, setWinner] = useState(null)
   const wheelRef = useRef(null)
   const spinTimeoutRef = useRef(null)
@@ -149,19 +148,38 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
                     stroke="#fff"
                     strokeWidth="2"
                   />
-                  {isMiddleSlot && slotCount <= 50 && (
-                    <text
-                      x={textX}
-                      y={textY}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fill="#fff"
-                      fontSize={fontSize}
-                      fontWeight="bold"
-                      style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
-                    >
-                      {slot.rank}등
-                    </text>
+                  {slotCount <= 50 && (
+                    <>
+                      {/* 칸 번호 (작게 상단에) */}
+                      <text
+                        x={textX}
+                        y={textY - 15}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fill="#fff"
+                        fontSize={Math.max(10, fontSize - 4)}
+                        fontWeight="bold"
+                        style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.5)' }}
+                      >
+                        {slot.slotIndex + 1}
+                      </text>
+
+                      {/* 등수 (중간 칸에만) */}
+                      {isMiddleSlot && (
+                        <text
+                          x={textX}
+                          y={textY + 5}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fill="#fff"
+                          fontSize={fontSize}
+                          fontWeight="bold"
+                          style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                        >
+                          {slot.rank}등
+                        </text>
+                      )}
+                    </>
                   )}
                 </g>
               )
