@@ -11,30 +11,6 @@ const DEFAULT_PRIZES = [
 
 function App() {
   const [prizes, setPrizes] = useState(DEFAULT_PRIZES)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  
-  // 제품 이미지 목록 (10개)
-  const productImages = [
-    'product-left.png',
-    'product-right.png',
-    'product-1.jpg',
-    'product-2.jpg',
-    'product-3.jpg',
-    'product-4.jpg',
-    'product-5.jpg',
-    'product-6.jpg',
-    'product-7.jpg',
-    'product-8.jpg'
-  ]
-  
-  // 3초마다 이미지 변경
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % productImages.length)
-    }, 3000)
-    
-    return () => clearInterval(interval)
-  }, [productImages.length])
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSpinning, setIsSpinning] = useState(false)
   const [currentAudio, setCurrentAudio] = useState(null)
@@ -113,30 +89,12 @@ function App() {
 
   return (
     <div className="app">
-      {/* 상단 코랄리에 헤더 */}
+      {/* 상단 코랄리에 로고 */}
       <header className="brand-header">
         <img
-          src={`${import.meta.env.BASE_URL}images/${productImages[currentImageIndex]}`}
-          alt="Product Left"
-          className="header-product-left"
-          key={`left-${currentImageIndex}`}
-          onError={(e) => {
-            e.target.style.display = 'none'
-          }}
-        />
-        <img
-          src={`${import.meta.env.BASE_URL}images/logo-banner.png`}
+          src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
           alt="CORALIER"
           className="brand-logo"
-          onError={(e) => {
-            e.target.style.display = 'none'
-          }}
-        />
-        <img
-          src={`${import.meta.env.BASE_URL}images/${productImages[(currentImageIndex + 5) % productImages.length]}`}
-          alt="Product Right"
-          className="header-product-right"
-          key={`right-${currentImageIndex}`}
           onError={(e) => {
             e.target.style.display = 'none'
           }}
