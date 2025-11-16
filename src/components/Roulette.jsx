@@ -20,6 +20,19 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
     })
   }
 
+  // 슬롯 위치 디버깅 (컴포넌트 로드 시 1회만)
+  useEffect(() => {
+    const slotAngle = 360 / slotCount
+    console.log('=== 룰렛 슬롯 위치 정보 ===')
+    console.log('총 슬롯 수:', slotCount, '| 각 슬롯 각도:', slotAngle, '도')
+    for (let i = 0; i < Math.min(slotCount, 10); i++) {
+      const start = i * slotAngle - slotAngle / 2
+      const end = start + slotAngle
+      const center = i * slotAngle
+      console.log(`슬롯 ${i + 1}: ${start.toFixed(1)}° ~ ${end.toFixed(1)}° (중앙: ${center.toFixed(1)}°)`)
+    }
+  }, [slotCount])
+
   // 랜덤 칸 선택
   const getRandomPrize = () => {
     const randomSlotIndex = Math.floor(Math.random() * slotCount)
@@ -59,7 +72,10 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
     const slotAngle = 360 / slotCount
     const slotIndex = winningPrize.slotIndex
 
-    // 해당 칸의 중앙 각도 (칸 1의 중앙이 0도가 되도록)
+    // 해당 칸의 중앙 각도
+    // SVG는 -90도 offset이 있으므로 (0도 = 3시, -90도 = 12시)
+    // 칸은 -slotAngle/2 offset으로 그려지므로
+    // 칸 0의 중앙: 0도, 칸 1의 중앙: 36도, ...
     const targetAngle = slotIndex * slotAngle
 
     console.log('🎯 목표 각도:', targetAngle.toFixed(1), '도 (칸', slotIndex + 1, '의 중앙)')
@@ -69,7 +85,14 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
     const spins = 5 + Math.random() * 3 // 5-8바퀴
     const totalRotation = 360 * spins + (360 - targetAngle)
 
-    setRotation(prev => prev + totalRotation)
+    console.log('🔄 회전 각도:', totalRotation.toFixed(1), '도')
+    console.log('📍 최종 각도:', (totalRotation % 360).toFixed(1), '도')
+
+    setRotation(prev => {
+      const newRotation = prev + totalRotation
+      console.log('🎡 누적 회전:', newRotation.toFixed(1), '도 (이전:', prev.toFixed(1), '도)')
+      return newRotation
+    })
 
     // 애니메이션 완료 후
     spinTimeoutRef.current = setTimeout(() => {
