@@ -27,20 +27,22 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
     setWinner(null)
     onSpin()
 
-    // 당첨 각도 계산
+    // 당첨 각도 계산 (포인터는 12시 방향/위쪽)
     const prizeIndex = prizes.findIndex(p => p.id === winningPrize.id)
     let targetAngle = 0
 
+    // 당첨 구간의 시작 각도 계산
     for (let i = 0; i < prizeIndex; i++) {
       targetAngle += (prizes[i].percentage / 100) * 360
     }
 
-    // 해당 구간 중간 지점을 목표로
+    // 해당 구간 중간 지점을 목표로 (포인터가 정확히 가리키도록)
     targetAngle += ((winningPrize.percentage / 100) * 360) / 2
 
     // 여러 바퀴 회전 + 목표 각도
+    // SVG는 -90도에서 시작하므로 90도를 더해서 보정
     const spins = 5 + Math.random() * 3 // 5-8바퀴
-    const totalRotation = 360 * spins + (360 - targetAngle)
+    const totalRotation = 360 * spins + (360 - targetAngle + 90)
 
     setRotation(prev => prev + totalRotation)
 
@@ -146,21 +148,11 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill="#fff"
-                    fontSize="18"
+                    fontSize="20"
                     fontWeight="bold"
                     style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
                   >
                     {prize.name}
-                  </text>
-                  <text
-                    x={textX}
-                    y={textY + 18}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    fill="#fff"
-                    fontSize="14"
-                  >
-                    {prize.percentage}%
                   </text>
                 </g>
               )
@@ -194,11 +186,25 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
       {winner && (
         <div className="result-overlay" onClick={handleCloseModal}>
           <div className="result-card" onClick={(e) => e.stopPropagation()}>
-            <h2>축하합니다!</h2>
-            <div className="winner-badge" style={{ background: winner.color }}>
+            <h2>🎉 축하합니다! 🎉</h2>
+            
+            {/* 당첨 상품 이미지 */}
+            <div className="prize-image-container">
+              <img
+                src={`${import.meta.env.BASE_URL}images/prizes/prize-${winner.id}.png`}
+                alt={winner.name}
+                className="prize-image"
+                onError={(e) => {
+                  e.target.style.display = 'none'
+                }}
+              />
+            </div>
+            
+            {/* 상품명 */}
+            <div className="winner-name">
               {winner.name}
             </div>
-            <p>당첨되었습니다!</p>
+            
             <button className="close-modal-button" onClick={handleCloseModal}>
               닫기
             </button>

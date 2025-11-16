@@ -87,10 +87,7 @@
   animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.6;
-  }
+
   50% {
     opacity: 0.8;
   }
@@ -229,9 +226,13 @@
     font-size: 28px;
   }
 
-  .winner-badge {
-    padding: 20px 40px;
-    font-size: 36px;
+  .prize-image {
+    max-width: 280px;
+  }
+
+  .winner-name {
+    font-size: 22px;
+    padding: 12px 20px;
   }
 
   .result-card p {
