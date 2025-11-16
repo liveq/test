@@ -180,6 +180,14 @@ function App() {
         <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D14135.jpg" alt="Coralier Product 4" />
       </div>
 
+      {/* 우측 제품 갤러리 */}
+      <div className="product-gallery-right">
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D14408.jpg" alt="Coralier Product 5" />
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D14075.jpg" alt="Coralier Product 6" />
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D15079.jpg" alt="Coralier Product 7" />
+        <img src="https://coralier.com/wp-content/uploads/2023/05/0412-%EC%BC%90%ED%85%8D14043.jpg" alt="Coralier Product 8" />
+      </div>
+
       <div className="app">
         {/* 상단 코랄리에 로고 */}
         <header className="brand-header">
