@@ -8,22 +8,20 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
   const spinTimeoutRef = useRef(null)
   const currentWinnerRef = useRef(null)
 
-  // 10칸 룰렛 구조: 각 칸(36도)에 상품 할당
+  // 10칸 룰렛 구조: prizes 배열 순서대로 percentage에 따라 칸 할당
   const getWheelSlots = () => {
     const slots = []
+    let currentSlot = 0
 
-    // 1등 (10%): 1칸
-    slots.push({ slotIndex: 0, prize: prizes.find(p => p.id === 1) })
+    // prizes 배열 순서대로, percentage에 따라 slot 0부터 할당
+    prizes.forEach((prize) => {
+      const slotsForThisPrize = Math.round(prize.percentage / 10) // 10% = 1칸
 
-    // 2등 (40%): 4칸
-    for (let i = 1; i <= 4; i++) {
-      slots.push({ slotIndex: i, prize: prizes.find(p => p.id === 2) })
-    }
-
-    // 3등 (50%): 5칸
-    for (let i = 5; i <= 9; i++) {
-      slots.push({ slotIndex: i, prize: prizes.find(p => p.id === 3) })
-    }
+      for (let i = 0; i < slotsForThisPrize; i++) {
+        slots.push({ slotIndex: currentSlot, prize: prize })
+        currentSlot++
+      }
+    })
 
     return slots
   }
@@ -127,13 +125,11 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                 `Z`
               ].join(' ')
 
-              // 텍스트는 각 상품의 대표 칸에만 표시
-              // 1등: 칸 0, 2등: 칸 2 (중간), 3등: 칸 7 (중간)
-              const showText = (
-                (slot.prize.id === 1 && slot.slotIndex === 0) ||
-                (slot.prize.id === 2 && slot.slotIndex === 2) ||
-                (slot.prize.id === 3 && slot.slotIndex === 7)
-              )
+              // 텍스트는 각 상품의 대표 칸(중간 칸)에만 표시
+              const allSlots = getWheelSlots()
+              const prizeSlots = allSlots.filter(s => s.prize.id === slot.prize.id)
+              const middleSlotIndex = prizeSlots[Math.floor(prizeSlots.length / 2)].slotIndex
+              const showText = slot.slotIndex === middleSlotIndex
 
               const midAngle = (startAngle + endAngle) / 2
               const midRad = (midAngle - 90) * Math.PI / 180
