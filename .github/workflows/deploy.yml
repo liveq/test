@@ -3,8 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - claude/roulette-game-setup-01GBBPB4WFpW7nRir1Bu1hSr
-      - main
+      - master
+      
   workflow_dispatch:
 
 permissions:
