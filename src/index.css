@@ -34,7 +34,7 @@ body {
   grid-template-columns: 1fr 1fr; /* 2열 균등 */
   grid-template-rows: 1fr 1.5fr 1fr; /* 상: 작음, 중: 큼, 하: 작음 */
   gap: 15px;
-  padding: 8vh 5%; /* 좌우 여백 최소화하여 폭 확보 */
+  padding: 15vh 15%; /* 상하좌우 여백 확대하여 복합체 30% 축소 */
   align-content: center; /* 그리드 아이템들을 세로 중앙 정렬 */
   z-index: 0;
 }

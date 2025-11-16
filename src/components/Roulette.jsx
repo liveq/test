@@ -87,7 +87,11 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
     const totalRotation = 360 * spins + (360 - targetAngle)
 
     console.log('🔄 회전 각도:', totalRotation.toFixed(1), '도')
-    console.log('📍 최종 각도:', (totalRotation % 360).toFixed(1), '도')
+
+    // 이번 회전의 최종 각도를 미리 계산 (클로저로 캡처)
+    const currentRotation = rotationRef.current || 0
+    const expectedFinalRotation = (currentRotation + totalRotation) % 360
+    console.log('📍 예상 최종 각도:', expectedFinalRotation.toFixed(1), '도')
 
     setRotation(prev => {
       const newRotation = prev + totalRotation
@@ -98,8 +102,8 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
 
     // 애니메이션 완료 후
     spinTimeoutRef.current = setTimeout(() => {
-      // 최종 회전 각도 확인 (ref에서 최신 값 읽기)
-      const finalRotation = rotationRef.current % 360
+      // 미리 계산한 최종 각도 사용 (클로저)
+      const finalRotation = expectedFinalRotation
       console.log('🏁 회전 완료! 최종 각도:', finalRotation.toFixed(1), '도')
 
       // 12시 방향(0도)에 있어야 할 슬롯 확인
