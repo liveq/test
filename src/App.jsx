@@ -88,20 +88,8 @@ function App() {
   }
 
   return (
-    <div className="app">
-      {/* 상단 코랄리에 로고 */}
-      <header className="brand-header">
-        <img
-          src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
-          alt="CORALIER"
-          className="brand-logo"
-          onError={(e) => {
-            e.target.style.display = 'none'
-          }}
-        />
-      </header>
-
-      {/* 플로팅 설정 버튼 */}
+    <>
+      {/* 플로팅 설정 버튼 (.app 밖에 위치) */}
       <button
         className="floating-settings-button"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -110,20 +98,34 @@ function App() {
         ⚙️
       </button>
 
-      <SettingsMenu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        prizes={prizes}
-        setPrizes={setPrizes}
-      />
+      <div className="app">
+        {/* 상단 코랄리에 로고 */}
+        <header className="brand-header">
+          <img
+            src={`${import.meta.env.BASE_URL}images/logo-banner.jpg`}
+            alt="CORALIER"
+            className="brand-logo"
+            onError={(e) => {
+              e.target.style.display = 'none'
+            }}
+          />
+        </header>
 
-      <Roulette
-        prizes={prizes}
-        onSpin={handleSpin}
-        onSpinEnd={handleSpinEnd}
-        isSpinning={isSpinning}
-      />
-    </div>
+        <SettingsMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          prizes={prizes}
+          setPrizes={setPrizes}
+        />
+
+        <Roulette
+          prizes={prizes}
+          onSpin={handleSpin}
+          onSpinEnd={handleSpinEnd}
+          isSpinning={isSpinning}
+        />
+      </div>
+    </>
   )
 }
 
