@@ -89,12 +89,28 @@ function App() {
 
   return (
     <div className="app">
-      {/* 상단 코랄리에 로고 배너 */}
+      {/* 상단 코랄리에 헤더 */}
       <header className="brand-header">
+        <img
+          src={`${import.meta.env.BASE_URL}images/product-left.png`}
+          alt="Product Left"
+          className="header-product-left"
+          onError={(e) => {
+            e.target.style.display = 'none'
+          }}
+        />
         <img
           src={`${import.meta.env.BASE_URL}images/logo-banner.png`}
           alt="CORALIER"
           className="brand-logo"
+          onError={(e) => {
+            e.target.style.display = 'none'
+          }}
+        />
+        <img
+          src={`${import.meta.env.BASE_URL}images/product-right.png`}
+          alt="Product Right"
+          className="header-product-right"
           onError={(e) => {
             e.target.style.display = 'none'
           }}
