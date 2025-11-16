@@ -95,7 +95,7 @@
 
 /* 결과 오버레이 */
 .result-overlay {
-  position: fixed;
+  position: absolute;
   top: 140px; /* 헤더 높이만큼 아래에서 시작 */
   left: 0;
   right: 0;

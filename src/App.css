@@ -43,7 +43,7 @@
 
 /* 햄버거 메뉴 버튼 */
 .menu-button {
-  position: fixed;
+  position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1000;
