@@ -8,18 +8,34 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
   const spinTimeoutRef = useRef(null)
   const currentWinnerRef = useRef(null)
 
-  const getRandomPrize = () => {
-    const random = Math.random() * 100
-    let cumulative = 0
+  // 10칸 룰렛 구조: 각 칸(36도)에 상품 할당
+  const getWheelSlots = () => {
+    const slots = []
 
-    for (const prize of prizes) {
-      cumulative += prize.percentage
-      if (random <= cumulative) {
-        return prize
-      }
+    // 1등 (10%): 1칸
+    slots.push({ slotIndex: 0, prize: prizes.find(p => p.id === 1) })
+
+    // 2등 (40%): 4칸
+    for (let i = 1; i <= 4; i++) {
+      slots.push({ slotIndex: i, prize: prizes.find(p => p.id === 2) })
     }
 
-    return prizes[prizes.length - 1]
+    // 3등 (50%): 5칸
+    for (let i = 5; i <= 9; i++) {
+      slots.push({ slotIndex: i, prize: prizes.find(p => p.id === 3) })
+    }
+
+    return slots
+  }
+
+  const getRandomPrize = () => {
+    const slots = getWheelSlots()
+    const randomSlotIndex = Math.floor(Math.random() * 10)
+    const selectedSlot = slots.find(s => s.slotIndex === randomSlotIndex)
+
+    console.log('🎲 랜덤 칸 선택:', randomSlotIndex, '/', 9)
+
+    return { ...selectedSlot.prize, slotIndex: randomSlotIndex }
   }
 
   const handleSpinClick = () => {
@@ -41,26 +57,23 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
     const winningPrize = getRandomPrize()
     currentWinnerRef.current = winningPrize
     console.log('🎰 당첨 상품:', winningPrize)
+    console.log('📍 당첨 칸:', winningPrize.slotIndex, '/ 9')
     console.log('📊 현재 prizes 순서:', prizes)
     setWinner(null)
     onSpin()
 
-    // 당첨 각도 계산 (포인터는 12시 방향/위쪽)
-    const prizeIndex = prizes.findIndex(p => p.id === winningPrize.id)
-    let targetAngle = 0
+    // 10칸 룰렛 각도 계산
+    const slotAngle = 36 // 360도 / 10칸
+    const slotIndex = winningPrize.slotIndex
 
-    // 당첨 구간의 시작 각도 계산
-    for (let i = 0; i < prizeIndex; i++) {
-      targetAngle += (prizes[i].percentage / 100) * 360
-    }
+    // 해당 칸의 중앙 각도 (포인터는 12시 방향)
+    const targetAngle = slotIndex * slotAngle + slotAngle / 2
 
-    // 해당 구간 중간 지점을 목표로 (포인터가 정확히 가리키도록)
-    targetAngle += ((winningPrize.percentage / 100) * 360) / 2
+    console.log('🎯 목표 각도:', targetAngle, '도 (칸', slotIndex, '의 중앙)')
 
     // 여러 바퀴 회전 + 목표 각도
-    // SVG는 -90도에서 시작하므로 90도를 더해서 보정
     const spins = 5 + Math.random() * 3 // 5-8바퀴
-    const totalRotation = 360 * spins + (360 - targetAngle + 90)
+    const totalRotation = 360 * spins + (360 - targetAngle)
 
     setRotation(prev => prev + totalRotation)
 
@@ -78,35 +91,6 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
     setWinner(null)
   }
 
-  // 룰렛 휠 세그먼트 그리기
-  const renderWheel = () => {
-    const segments = []
-    let currentAngle = 0
-
-    prizes.forEach((prize, index) => {
-      const angle = (prize.percentage / 100) * 360
-      segments.push(
-        <div
-          key={prize.id}
-          className="wheel-segment"
-          style={{
-            '--angle': `${angle}deg`,
-            '--start-angle': `${currentAngle}deg`,
-            '--color': prize.color
-          }}
-        >
-          <div className="segment-content">
-            <span className="segment-text">{prize.name}</span>
-            <span className="segment-percentage">{prize.percentage}%</span>
-          </div>
-        </div>
-      )
-      currentAngle += angle
-    })
-
-    return segments
-  }
-
   return (
     <div className="roulette-container">
       <div className="roulette-wheel-wrapper">
@@ -122,13 +106,10 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
           }}
         >
           <svg width="100%" height="100%" viewBox="0 0 400 400">
-            {prizes.map((prize, index) => {
-              let startAngle = 0
-              for (let i = 0; i < index; i++) {
-                startAngle += (prizes[i].percentage / 100) * 360
-              }
-              const angle = (prize.percentage / 100) * 360
-              const endAngle = startAngle + angle
+            {getWheelSlots().map((slot) => {
+              const slotAngle = 36 // 각 칸은 36도
+              const startAngle = slot.slotIndex * slotAngle
+              const endAngle = startAngle + slotAngle
 
               // SVG path 계산
               const startRad = (startAngle - 90) * Math.PI / 180
@@ -139,12 +120,10 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
               const x2 = 200 + 180 * Math.cos(endRad)
               const y2 = 200 + 180 * Math.sin(endRad)
 
-              const largeArcFlag = angle > 180 ? 1 : 0
-
               const pathData = [
                 `M 200 200`,
                 `L ${x1} ${y1}`,
-                `A 180 180 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                `A 180 180 0 0 1 ${x2} ${y2}`,
                 `Z`
               ].join(' ')
 
@@ -155,10 +134,10 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
               const textY = 200 + 120 * Math.sin(midRad)
 
               return (
-                <g key={prize.id}>
+                <g key={`slot-${slot.slotIndex}`}>
                   <path
                     d={pathData}
-                    fill={prize.color}
+                    fill={slot.prize.color}
                     stroke="#fff"
                     strokeWidth="3"
                   />
@@ -168,11 +147,11 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fill="#fff"
-                    fontSize="20"
+                    fontSize="16"
                     fontWeight="bold"
                     style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
                   >
-                    {prize.name}
+                    {slot.prize.name}
                   </text>
                 </g>
               )
@@ -209,7 +188,7 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
 
             {/* 디버깅 정보 */}
             <div style={{ fontSize: '12px', color: '#999', marginBottom: '10px' }}>
-              ID: {winner.id} | 확률: {winner.percentage}% | 이미지: prize-{winner.id}.png
+              ID: {winner.id} | 칸: {winner.slotIndex} / 9 | 확률: {winner.percentage}% | 이미지: prize-{winner.id}.png
             </div>
 
             {/* 당첨 상품 이미지 */}
