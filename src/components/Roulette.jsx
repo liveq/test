@@ -40,6 +40,8 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
 
     const winningPrize = getRandomPrize()
     currentWinnerRef.current = winningPrize
+    console.log('🎰 당첨 상품:', winningPrize)
+    console.log('📊 현재 prizes 순서:', prizes)
     setWinner(null)
     onSpin()
 
@@ -204,7 +206,12 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
         <div className="result-overlay" onClick={handleCloseModal}>
           <div className="result-card" onClick={(e) => e.stopPropagation()}>
             <h2>🎉 축하합니다! 🎉</h2>
-            
+
+            {/* 디버깅 정보 */}
+            <div style={{ fontSize: '12px', color: '#999', marginBottom: '10px' }}>
+              ID: {winner.id} | 확률: {winner.percentage}% | 이미지: prize-{winner.id}.png
+            </div>
+
             {/* 당첨 상품 이미지 */}
             <div className="prize-image-container">
               <img
@@ -212,11 +219,15 @@ function Roulette({ prizes, onSpin, onSpinEnd, isSpinning }) {
                 alt={winner.name}
                 className="prize-image"
                 onError={(e) => {
+                  console.error('❌ 이미지 로드 실패:', e.target.src)
                   e.target.style.display = 'none'
+                }}
+                onLoad={(e) => {
+                  console.log('✅ 이미지 로드 성공:', e.target.src)
                 }}
               />
             </div>
-            
+
             {/* 상품명 */}
             <div className="winner-name">
               {winner.name}
