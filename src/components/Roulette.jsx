@@ -82,7 +82,7 @@ function Roulette({ prizes, slotCount, slotConfig, onSpin, onSpinEnd, isSpinning
 
     // 여러 바퀴 회전 + 목표 각도 계산
     // 화살표는 12시에 고정, slot 중앙을 12시로 이동시키기
-    const spins = 5 + Math.random() * 3 // 5-8바퀴
+    const spins = Math.floor(5 + Math.random() * 4) // 5, 6, 7, 8바퀴 (정수만)
     const totalRotation = 360 * spins + (360 - targetAngle)
 
     console.log('🔄 회전 각도:', totalRotation.toFixed(1), '도')
