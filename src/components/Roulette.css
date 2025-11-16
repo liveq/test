@@ -99,7 +99,7 @@
 /* 결과 오버레이 */
 .result-overlay {
   position: absolute;
-  top: 80px; /* 헤더 아래 살짝 띄워서 배치 */
+  top: 20px; /* 헤더 영역과 거의 겹치게 상단 배치 */
   left: 0;
   right: 0;
   bottom: 0;
